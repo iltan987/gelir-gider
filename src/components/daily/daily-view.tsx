@@ -1,0 +1,132 @@
+import { useState, useCallback } from "react";
+import { Plus } from "lucide-react";
+import { useAppStore } from "@/stores/app-store";
+import { useTransactions } from "@/hooks/use-transactions";
+import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/shared/date-picker";
+import { TransactionForm } from "./transaction-form";
+import { TransactionList } from "./transaction-list";
+import type { Transaction, TransactionType } from "@/types";
+
+type FormMode =
+  | { kind: "closed" }
+  | { kind: "add"; type: TransactionType; resetKey: number }
+  | { kind: "edit"; transaction: Transaction };
+
+export function DailyView() {
+  const selectedDate = useAppStore((s) => s.selectedDate);
+  const setSelectedDate = useAppStore((s) => s.setSelectedDate);
+  const goToToday = useAppStore((s) => s.goToToday);
+  const { transactions, isLoading, add, update, remove, removeAllByType } =
+    useTransactions();
+
+  const [formMode, setFormMode] = useState<FormMode>({ kind: "closed" });
+
+  const handleSave = useCallback(
+    async (data: {
+      type: TransactionType;
+      amount: number;
+      category: string;
+      note: string | null;
+    }) => {
+      if (formMode.kind === "edit") {
+        await update(formMode.transaction.id, data);
+        setFormMode({ kind: "closed" });
+      } else if (formMode.kind === "add") {
+        await add(data);
+        // Stay open for continuous adding - bump key to reset form
+        setFormMode((prev) =>
+          prev.kind === "add" ? { ...prev, resetKey: prev.resetKey + 1 } : prev,
+        );
+      }
+    },
+    [formMode, add, update],
+  );
+
+  function handleEdit(transaction: Transaction) {
+    setFormMode({ kind: "edit", transaction });
+  }
+
+  function handleClose() {
+    setFormMode({ kind: "closed" });
+  }
+
+  function openAdd(type: TransactionType) {
+    setFormMode({ kind: "add", type, resetKey: 0 });
+  }
+
+  const formType =
+    formMode.kind === "edit"
+      ? formMode.transaction.type
+      : formMode.kind === "add"
+        ? formMode.type
+        : null;
+
+  const editingTransaction =
+    formMode.kind === "edit" ? formMode.transaction : null;
+
+  const formKey =
+    formMode.kind === "edit"
+      ? formMode.transaction.id
+      : formMode.kind === "add"
+        ? `new-${formMode.type}-${formMode.resetKey}`
+        : "closed";
+
+  return (
+    <div className="space-y-4">
+      <DatePicker
+        value={selectedDate}
+        onChange={setSelectedDate}
+        onGoToToday={goToToday}
+      />
+
+      <div className="side-by-side">
+        <Button
+          variant="outline"
+          className={
+            formMode.kind === "add" && formMode.type === "revenue"
+              ? "border-emerald-500 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-900"
+              : "text-emerald-600 hover:border-emerald-300 hover:text-emerald-700"
+          }
+          onClick={() => openAdd("revenue")}
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          Gelir Ekle
+        </Button>
+        <Button
+          variant="outline"
+          className={
+            formMode.kind === "add" && formMode.type === "expense"
+              ? "border-rose-500 bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-400 dark:hover:bg-rose-900"
+              : "text-rose-600 hover:border-rose-300 hover:text-rose-700"
+          }
+          onClick={() => openAdd("expense")}
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          Gider Ekle
+        </Button>
+      </div>
+
+      {formMode.kind !== "closed" && formType && (
+        <TransactionForm
+          key={formKey}
+          type={formType}
+          editingTransaction={editingTransaction}
+          onSave={handleSave}
+          onCancel={handleClose}
+        />
+      )}
+
+      {isLoading ? (
+        <p className="text-muted-foreground text-sm">Yükleniyor...</p>
+      ) : (
+        <TransactionList
+          transactions={transactions}
+          onEdit={handleEdit}
+          onDelete={remove}
+          onDeleteAllByType={removeAllByType}
+        />
+      )}
+    </div>
+  );
+}

@@ -2,13 +2,14 @@ import "./App.css";
 import { DbProvider } from "@/providers/db-provider";
 import { NavBar } from "@/components/shared/nav-bar";
 import { useAppStore } from "@/stores/app-store";
+import { DailyView } from "@/components/daily/daily-view";
 
 function ViewRouter() {
   const activeView = useAppStore((s) => s.activeView);
 
   switch (activeView) {
     case "daily":
-      return <PlaceholderView name="Günlük" />;
+      return <DailyView />;
     case "analysis":
       return <PlaceholderView name="Analiz" />;
     case "filter":

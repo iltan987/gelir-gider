@@ -43,3 +43,29 @@ export function parseTurkishAmount(input: string): number | null {
 
   return Math.round(parsed * 100);
 }
+
+/**
+ * Live-format an amount input string with Turkish thousand separators.
+ * Used as the user types or pastes into the amount field.
+ * "15000" → "15.000", "15000,5" → "15.000,5", "15.000,00" → "15.000,00"
+ */
+export function formatAmountInput(raw: string): string {
+  // Strip everything except digits and comma
+  const cleaned = raw.replace(/[^\d,]/g, "");
+
+  // Split on first comma
+  const commaIdx = cleaned.indexOf(",");
+  const intPart = commaIdx === -1 ? cleaned : cleaned.slice(0, commaIdx);
+  const decPart =
+    commaIdx === -1 ? null : cleaned.slice(commaIdx + 1, commaIdx + 3);
+
+  // Add thousand separators to integer part
+  const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  if (decPart !== null) {
+    // Only keep digits in decimal part
+    return `${formatted},${decPart.replace(/\D/g, "")}`;
+  }
+
+  return formatted;
+}

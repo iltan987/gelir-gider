@@ -1,7 +1,14 @@
-import { addDays, subDays, format } from "date-fns";
+import { useState } from "react";
+import { addDays, subDays, format, parse } from "date-fns";
+import { tr } from "date-fns/locale/tr";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { formatDateTR } from "@/lib/format";
 
 interface DatePickerProps {
@@ -11,7 +18,8 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ value, onChange, onGoToToday }: DatePickerProps) {
-  const date = new Date(value + "T00:00:00");
+  const [open, setOpen] = useState(false);
+  const date = parse(value, "yyyy-MM-dd", new Date());
 
   function handlePrev() {
     onChange(format(subDays(date, 1), "yyyy-MM-dd"));
@@ -21,9 +29,10 @@ export function DatePicker({ value, onChange, onGoToToday }: DatePickerProps) {
     onChange(format(addDays(date, 1), "yyyy-MM-dd"));
   }
 
-  function handleDateInput(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.value) {
-      onChange(e.target.value);
+  function handleSelect(selected: Date | undefined) {
+    if (selected) {
+      onChange(format(selected, "yyyy-MM-dd"));
+      setOpen(false);
     }
   }
 
@@ -33,24 +42,34 @@ export function DatePicker({ value, onChange, onGoToToday }: DatePickerProps) {
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="flex items-center gap-2">
-        <Input
-          type="date"
-          value={value}
-          onChange={handleDateInput}
-          className="w-auto"
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger
+          render={
+            <button className="hover:bg-accent inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium">
+              <CalendarDays className="h-4 w-4" />
+              {formatDateTR(value)}
+            </button>
+          }
         />
-        <span className="text-muted-foreground text-sm whitespace-nowrap">
-          {formatDateTR(value)}
-        </span>
-      </div>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={handleSelect}
+            defaultMonth={date}
+            locale={tr}
+            captionLayout="dropdown"
+            startMonth={new Date(new Date().getFullYear() - 7, 0)}
+            endMonth={new Date(new Date().getFullYear() + 2, 11)}
+          />
+        </PopoverContent>
+      </Popover>
 
       <Button variant="outline" size="icon" onClick={handleNext}>
         <ChevronRight className="h-4 w-4" />
       </Button>
 
       <Button variant="outline" size="sm" onClick={onGoToToday}>
-        <CalendarDays className="mr-1 h-4 w-4" />
         Bugün
       </Button>
     </div>

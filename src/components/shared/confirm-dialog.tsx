@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -10,6 +8,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 interface ConfirmDialogProps {
   trigger: React.ReactElement;
@@ -32,6 +31,7 @@ export function ConfirmDialog({
   onConfirm,
   variant = "default",
 }: ConfirmDialogProps) {
+  const [open, setOpen] = useState(false);
   const [showSecond, setShowSecond] = useState(false);
 
   function handleConfirm() {
@@ -40,15 +40,22 @@ export function ConfirmDialog({
       return;
     }
     setShowSecond(false);
+    setOpen(false);
     onConfirm();
   }
 
   function handleCancel() {
     setShowSecond(false);
+    setOpen(false);
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+    if (!nextOpen) setShowSecond(false);
   }
 
   return (
-    <AlertDialog onOpenChange={(open) => !open && setShowSecond(false)}>
+    <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger render={trigger} />
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -62,21 +69,20 @@ export function ConfirmDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={handleCancel}>
+          <Button variant="outline" onClick={handleCancel}>
             {cancelLabel}
-          </AlertDialogCancel>
-          {showSecond ? (
-            <AlertDialogAction variant="destructive" onClick={handleConfirm}>
-              Evet, devam et
-            </AlertDialogAction>
-          ) : (
-            <AlertDialogAction
-              variant={variant === "destructive" ? "destructive" : "default"}
-              onClick={handleConfirm}
-            >
-              {confirmLabel}
-            </AlertDialogAction>
-          )}
+          </Button>
+          <Button
+            autoFocus
+            variant={
+              showSecond || variant === "destructive"
+                ? "destructive"
+                : "default"
+            }
+            onClick={handleConfirm}
+          >
+            {showSecond ? "Evet, devam et" : confirmLabel}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

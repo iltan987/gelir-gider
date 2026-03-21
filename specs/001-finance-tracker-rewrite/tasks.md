@@ -68,10 +68,10 @@
 
 **Independent Test**: Add revenue and expense entries for today, edit an amount, delete an entry, navigate to a different date, use "go to today" — all records persist correctly
 
-- [ ] T023 [P] [US1] Create use-transactions hook (load transactions by date from store, provide add/update/delete/deleteAll functions, handle refund category auto-negation for İADE) in src/hooks/use-transactions.ts
-- [ ] T024 [P] [US1] Create transaction form component (add/edit mode toggle, date field, type radio revenue/expense, amount input with Turkish format normalization, category select filtered by type, optional note field, save/cancel actions, zero-amount rejection) in src/components/daily/transaction-form.tsx
-- [ ] T025 [US1] Create transaction list component (side-by-side revenue and expense columns per FR-021, each row shows amount/category/note, edit and delete action buttons, visible grid lines per FR-022, double-confirm bulk delete for clearing a day) in src/components/daily/transaction-list.tsx
-- [ ] T026 [US1] Create daily view container (date picker for navigation with go-to-today, transaction form, transaction list, wire up use-transactions hook, load transactions on date change) in src/components/daily/daily-view.tsx
+- [x] T023 [P] [US1] Create use-transactions hook (load transactions by date from store, provide add/update/delete/deleteAll functions, handle refund category auto-negation for İADE) in src/hooks/use-transactions.ts
+- [x] T024 [P] [US1] Create transaction form component (add/edit mode toggle, date field, type radio revenue/expense, amount input with Turkish format normalization, category select filtered by type, optional note field, save/cancel actions, zero-amount rejection) in src/components/daily/transaction-form.tsx
+- [x] T025 [US1] Create transaction list component (side-by-side revenue and expense columns per FR-021, each row shows amount/category/note, edit and delete action buttons, visible grid lines per FR-022, double-confirm bulk delete for clearing a day) in src/components/daily/transaction-list.tsx
+- [x] T026 [US1] Create daily view container (date picker for navigation with go-to-today, transaction form, transaction list, wire up use-transactions hook, load transactions on date change) in src/components/daily/daily-view.tsx
 
 **Checkpoint**: Daily transaction CRUD fully functional — can add, edit, delete, navigate dates. This is the MVP.
 

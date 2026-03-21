@@ -27,6 +27,10 @@ export interface TransactionSlice {
   ) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   deleteAllForDate: (date: string) => Promise<void>;
+  deleteAllForDateByType: (
+    date: string,
+    type: TransactionType,
+  ) => Promise<void>;
 }
 
 export const createTransactionSlice: StateCreator<
@@ -79,6 +83,14 @@ export const createTransactionSlice: StateCreator<
 
   deleteAllForDate: async (date) => {
     await execute("DELETE FROM transactions WHERE date = $1", [date]);
+    await get().loadTransactionsByDate(date);
+  },
+
+  deleteAllForDateByType: async (date, type) => {
+    await execute("DELETE FROM transactions WHERE date = $1 AND type = $2", [
+      date,
+      type,
+    ]);
     await get().loadTransactionsByDate(date);
   },
 });
