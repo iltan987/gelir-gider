@@ -1,15 +1,16 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 2.0.0 → 2.1.0
+  Version change: 2.1.0 → 2.2.0
   Modified sections:
-    - Development Workflow > Commit Discipline (expanded with
-      frequent-commit and short-message rules)
-  Added sections:
-    - Development Workflow > Review Checkpoints (new subsection)
+    - Core Principles > I. Tool-First Development — expanded with
+      CLI automation preference, automate-verify-fix workflow, and
+      explicit zero-assumption mandate
+  Added sections: None
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md ✅ no update needed
+      (Constitution Check already gates on all principles)
     - .specify/templates/spec-template.md ✅ no update needed
     - .specify/templates/tasks-template.md ✅ already aligned
       (Notes section includes "Commit after each task or logical
@@ -23,10 +24,11 @@
 
 ### I. Tool-First Development (NON-NEGOTIABLE)
 
-When an MCP tool is available for a task, it MUST be used instead of
-manual approaches or outdated knowledge. This is the primary mechanism
-for staying current with library APIs, component patterns, and best
-practices.
+NEVER assume. ALWAYS look it up. When any tool — MCP, CLI, or
+automated script — can perform a task, it MUST be used instead of
+manual approaches or prior knowledge.
+
+**MCP Tools & Documentation**:
 
 - Context7 MUST be used to fetch up-to-date documentation before
   using any library API, hook, or pattern where the agent is not
@@ -45,6 +47,28 @@ practices.
 - Tool output MUST be treated as the authoritative source; prior
   knowledge yields to tool output when they conflict
 
+**CLI Automation**:
+
+- When a CLI command can automate a task (e.g., `pnpm tauri add`,
+  `eslint --fix`, `pnpm format`, scaffolding generators), it MUST
+  be used instead of manual file edits
+- After running any automated command, ALWAYS verify what it changed:
+  read the modified files, compare against documentation, and fill
+  any gaps the automation missed
+- If automation produces incorrect or incomplete results, research
+  the issue via tools or web search before manually correcting
+
+**The Automate → Verify → Fix Pattern**:
+
+This workflow applies universally — plugin installs, lint fixes,
+code generation, dependency updates, and any other automated task:
+
+1. **Automate**: Run the CLI command or automated tool
+2. **Verify**: Read what it changed; compare against docs
+3. **Fix**: If anything is missing or wrong, research and correct
+
+Never skip steps 2–3. Automation is a starting point, not the end.
+
 ### II. Type Safety & Code Quality
 
 All code MUST pass TypeScript strict-mode compilation, ESLint, and
@@ -61,6 +85,8 @@ Prettier checks without suppression.
   `eslint-plugin-unused-imports`)
 - Functions MUST have explicit return types when exported; inferred
   types are acceptable for local/private functions
+- Lint and format issues MUST be fixed using automated tools
+  (`pnpm lint:fix`, `pnpm format`) before attempting manual fixes
 
 ### III. Component-Driven UI
 
@@ -172,9 +198,10 @@ approval; substitutions are prohibited without constitution amendment.
 
 ### Code Changes
 
-1. Run `pnpm lint` after changes — fix all violations before
-   proceeding
-2. Run `pnpm format:check` — formatting MUST pass
+1. Run `pnpm lint:fix` after changes — prefer automated fix over
+   manual edits; review remaining violations and fix manually only
+   if the auto-fixer cannot resolve them
+2. Run `pnpm format` — prefer auto-format over manual formatting
 3. Run `pnpm build` — TypeScript compilation MUST succeed with zero
    errors
 4. Test the affected workflow manually when UI changes are involved
@@ -218,4 +245,4 @@ MUST be consistent with these principles.
 - **Review**: Constitution MUST be reviewed when adding new
   technology dependencies or changing architectural patterns
 
-**Version**: 2.1.0 | **Ratified**: 2026-03-21 | **Last Amended**: 2026-03-21
+**Version**: 2.2.0 | **Ratified**: 2026-03-21 | **Last Amended**: 2026-03-21
