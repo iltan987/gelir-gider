@@ -24,11 +24,11 @@
 
 **Purpose**: Install dependencies, configure Tauri plugins, create initial migration
 
-- [ ] T001 Install Tauri plugins via CLI (`pnpm tauri add sql`, `pnpm tauri add dialog`, `pnpm tauri add fs`, `pnpm tauri add process`) — each command adds both Rust crate and JS bindings automatically. Then enable `sqlite` feature on `tauri-plugin-sql` in src-tauri/Cargo.toml and verify all four plugins are registered in src-tauri/src/lib.rs
-- [ ] T002 Install frontend application dependencies via `pnpm add zustand date-fns recharts xlsx react-to-print`
-- [ ] T003 [P] Configure Tauri plugin permissions (sql:allow-load, sql:allow-execute, sql:allow-select, dialog:allow-save, dialog:allow-open, fs:allow-read, fs:allow-write, fs:allow-exists, fs:allow-mkdir, fs:allow-remove, fs:allow-rename, fs:allow-copy-file, fs:allow-read-dir, process:allow-relaunch) in src-tauri/capabilities/default.json
-- [ ] T004 [P] Configure SQL plugin preload with "sqlite:gelir-gider.db" in src-tauri/tauri.conf.json plugins section
-- [ ] T005 [P] Create initial migration SQL (transactions table, app_metadata table, indexes) per data-model.md schema in src-tauri/migrations/001_create_transactions.sql
+- [x] T001 Install Tauri plugins via CLI (`pnpm tauri add sql`, `pnpm tauri add dialog`, `pnpm tauri add fs`, `pnpm tauri add process`) — each command adds both Rust crate and JS bindings automatically. Then enable `sqlite` feature on `tauri-plugin-sql` in src-tauri/Cargo.toml and verify all four plugins are registered in src-tauri/src/lib.rs
+- [x] T002 Install frontend application dependencies via `pnpm add zustand date-fns recharts xlsx react-to-print`
+- [x] T003 [P] Configure Tauri plugin permissions (sql:allow-load, sql:allow-execute, sql:allow-select, dialog:allow-save, dialog:allow-open, fs:allow-read, fs:allow-write, fs:allow-exists, fs:allow-mkdir, fs:allow-remove, fs:allow-rename, fs:allow-copy-file, fs:allow-read-dir, process:allow-relaunch) in src-tauri/capabilities/default.json
+- [x] T004 [P] Configure SQL plugin preload with "sqlite:gelir-gider.db" in src-tauri/tauri.conf.json plugins section
+- [x] T005 [P] Create initial migration SQL (transactions table, app_metadata table, indexes) per data-model.md schema in src-tauri/migrations/001_create_transactions.sql
 
 **Checkpoint**: All dependencies installed, Tauri configured, migration file ready
 
