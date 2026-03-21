@@ -1,20 +1,19 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: N/A (initial) → 1.0.0
-  Modified principles: N/A (first version)
+  Version change: 2.0.0 → 2.1.0
+  Modified sections:
+    - Development Workflow > Commit Discipline (expanded with
+      frequent-commit and short-message rules)
   Added sections:
-    - Core Principles (6 principles)
-    - Technology Standards
-    - Development Workflow
-    - Governance
-  Removed sections: N/A
+    - Development Workflow > Review Checkpoints (new subsection)
+  Removed sections: None
   Templates requiring updates:
-    - .specify/templates/plan-template.md ✅ no update needed (Constitution Check section is generic)
-    - .specify/templates/spec-template.md ✅ no update needed (structure is generic)
-    - .specify/templates/tasks-template.md ✅ no update needed (structure is generic)
-    - .specify/templates/agent-file-template.md ✅ no update needed (placeholder-based)
-    - .specify/templates/checklist-template.md ✅ no update needed (placeholder-based)
+    - .specify/templates/plan-template.md ✅ no update needed
+    - .specify/templates/spec-template.md ✅ no update needed
+    - .specify/templates/tasks-template.md ✅ already aligned
+      (Notes section includes "Commit after each task or logical
+      group" and "Stop at any checkpoint to validate")
   Follow-up TODOs: None
 -->
 
@@ -182,9 +181,23 @@ approval; substitutions are prohibited without constitution amendment.
 
 ### Commit Discipline
 
-- Commits MUST NOT include `Co-Authored-By` lines
-- Commit messages MUST be concise and describe the "why"
+- Commits MUST be made frequently — once a task, phase, or
+  logical unit of work is complete, commit immediately
+- Commit messages MUST be short and describe the change; because
+  commits are frequent and small, messages are naturally concise
 - Each commit MUST represent a single logical change
+- Commits MUST NOT include `Co-Authored-By` lines
+
+### Review Checkpoints
+
+- The agent MUST NOT rush through implementation. At natural
+  boundaries (phase completion, milestone, complex decision
+  point), the agent MUST pause and present work for user review
+  and approval before proceeding
+- When in doubt about direction, stop and ask — do not accumulate
+  speculative changes that may need to be reverted
+- The user's explicit approval is required before moving to the
+  next phase or major section of work
 
 ## Governance
 
@@ -205,4 +218,4 @@ MUST be consistent with these principles.
 - **Review**: Constitution MUST be reviewed when adding new
   technology dependencies or changing architectural patterns
 
-**Version**: 2.0.0 | **Ratified**: 2026-03-21 | **Last Amended**: 2026-03-21
+**Version**: 2.1.0 | **Ratified**: 2026-03-21 | **Last Amended**: 2026-03-21
