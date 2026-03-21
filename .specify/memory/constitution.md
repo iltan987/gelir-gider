@@ -133,7 +133,7 @@ financial domain expectations.
   thousands separator, comma as decimal separator)
 - Dates MUST render in Turkish locale format (e.g., `21 Mart 2026`)
 - Category names MUST match the canonical category list exactly as
-  defined in `categories.txt` — no normalization or translation
+  defined in `src/lib/categories.ts` — no normalization or translation
 - Destructive actions (delete day, clear records, restore backup)
   MUST require explicit confirmation with a clear description of
   the consequences
