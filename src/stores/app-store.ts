@@ -4,12 +4,10 @@ import {
   createTransactionSlice,
   type TransactionSlice,
 } from "./slices/transaction-slice";
-import { createFilterSlice, type FilterSlice } from "./slices/filter-slice";
 
-export type AppState = UiSlice & TransactionSlice & FilterSlice;
+export type AppState = UiSlice & TransactionSlice;
 
 export const useAppStore = create<AppState>()((...a) => ({
   ...createUiSlice(...a),
   ...createTransactionSlice(...a),
-  ...createFilterSlice(...a),
 }));

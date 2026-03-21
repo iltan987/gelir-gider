@@ -13,8 +13,6 @@ function ViewRouter() {
       return <DailyView />;
     case "analysis":
       return <AnalysisView />;
-    case "filter":
-      return <PlaceholderView name="Filtre" />;
     case "settings":
       return <PlaceholderView name="Ayarlar" />;
   }

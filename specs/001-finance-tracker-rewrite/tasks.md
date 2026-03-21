@@ -126,15 +126,11 @@
 
 ## Phase 7: User Story 5 — Advanced Filtering & Record Exploration (Priority: P3)
 
-**Goal**: Find and review specific records using date operators, category operators, free-text search, and combined filter conditions displayed in a structured grid
+**DROPPED**: Redundant with Analysis view filters (category, note, date range). Filter slice and View type cleaned up.
 
-**Independent Test**: Filter by category "equals NAKİT" — only NAKİT records appear. Combine date range + category not-equals — verify correct subset. Search free text — verify matching results.
-
-- [ ] T037 [US5] Create filter builder component (date filter operators: within last N days, more than N days ago, between dates, in range; category operators: equals, not equals with multi-select; free-text search input; add/remove conditions; clear all) in src/components/filter/filter-builder.tsx
-- [ ] T038 [P] [US5] Create results grid component (columns: date, type, amount, category, note; visible grid lines per FR-022; Turkish date and amount formatting; empty-state message) using shadcn Table in src/components/filter/results-grid.tsx
-- [ ] T039 [US5] Create filter view container (filter builder at top, execute filter button, results grid below, wire up filter-slice store actions, build dynamic SQL query from conditions per database contract) in src/components/filter/filter-view.tsx
-
-**Checkpoint**: Advanced filtering fully functional with combinable conditions and structured results display
+- [x] T037 ~~DROPPED~~ Filter builder - covered by analysis view filters
+- [x] T038 ~~DROPPED~~ Results grid - covered by analysis table
+- [x] T039 ~~DROPPED~~ Filter view container - covered by analysis view
 
 ---
 

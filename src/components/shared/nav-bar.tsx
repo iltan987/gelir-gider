@@ -1,33 +1,42 @@
+import { Settings } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/app-store";
 import type { View } from "@/types";
 
-const VIEW_LABELS: Record<View, string> = {
-  daily: "Günlük",
-  analysis: "Analiz",
-  filter: "Filtre",
-  settings: "Ayarlar",
-};
-
-const VIEWS: View[] = ["daily", "analysis", "filter", "settings"];
+const TABS: Array<{ value: View; label: string }> = [
+  { value: "daily", label: "Günlük" },
+  { value: "analysis", label: "Analiz" },
+];
 
 export function NavBar() {
   const activeView = useAppStore((s) => s.activeView);
   const setView = useAppStore((s) => s.setView);
 
   return (
-    <Tabs
-      value={activeView}
-      onValueChange={(v) => setView(v as View)}
-      className="w-full print:hidden"
-    >
-      <TabsList className="w-full">
-        {VIEWS.map((view) => (
-          <TabsTrigger key={view} value={view} className="flex-1">
-            {VIEW_LABELS[view]}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </Tabs>
+    <div className="flex items-center gap-2 print:hidden">
+      <Tabs
+        value={activeView === "settings" ? undefined : activeView}
+        onValueChange={(v) => setView(v as View)}
+        className="flex-1"
+      >
+        <TabsList className="w-full">
+          {TABS.map((tab) => (
+            <TabsTrigger key={tab.value} value={tab.value} className="flex-1">
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+      <Button
+        variant={activeView === "settings" ? "default" : "ghost"}
+        size="icon"
+        className="group"
+        onClick={() => setView("settings")}
+        aria-label="Ayarlar"
+      >
+        <Settings className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
+      </Button>
+    </div>
   );
 }
