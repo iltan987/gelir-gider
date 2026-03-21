@@ -25,7 +25,7 @@ export function DailySummary({ summary, transactionCount }: DailySummaryProps) {
   return (
     <Card size="sm">
       <CardContent>
-        <div className="grid grid-cols-3 gap-4 text-center items-center">
+        <div className="grid grid-cols-3 items-center gap-4 text-center">
           <div>
             <p className="text-muted-foreground text-xs">Toplam Gelir</p>
             <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">

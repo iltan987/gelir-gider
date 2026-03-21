@@ -3,6 +3,7 @@ import { DbProvider } from "@/providers/db-provider";
 import { NavBar } from "@/components/shared/nav-bar";
 import { useAppStore } from "@/stores/app-store";
 import { DailyView } from "@/components/daily/daily-view";
+import { AnalysisView } from "@/components/analysis/analysis-view";
 
 function ViewRouter() {
   const activeView = useAppStore((s) => s.activeView);
@@ -11,7 +12,7 @@ function ViewRouter() {
     case "daily":
       return <DailyView />;
     case "analysis":
-      return <PlaceholderView name="Analiz" />;
+      return <AnalysisView />;
     case "filter":
       return <PlaceholderView name="Filtre" />;
     case "settings":

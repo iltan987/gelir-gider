@@ -98,11 +98,11 @@
 
 **Independent Test**: Select March 2026, verify chart renders daily data, check all metrics (totals, averages, active days, best/worst), verify category breakdowns. Apply a category filter and confirm all metrics recalculate.
 
-- [ ] T029 [US3] Create use-analysis hook (load transactions for date range via db service, compute PeriodAnalysis via calculatePeriodAnalysis, support optional category filter, recompute on filter change) in src/hooks/use-analysis.ts
-- [ ] T030 [P] [US3] Create period chart component (Recharts ComposedChart with daily revenue bars, expense bars, and net trend line, ResponsiveContainer, Turkish formatted tooltips, grid lines) in src/components/analysis/period-chart.tsx
-- [ ] T031 [P] [US3] Create period metrics component (total revenue, total expense, net result, active days count, average daily revenue, average daily expense, best turnover day, worst turnover day) in src/components/analysis/period-metrics.tsx
-- [ ] T032 [P] [US3] Create category breakdown component (revenue categories list and expense categories list, each showing total amount and proportional percentage of category total) in src/components/analysis/category-breakdown.tsx
-- [ ] T033 [US3] Create analysis view container (period selector: single month, multi-month range, year-to-date; category filter dropdown; period-chart, period-metrics, category-breakdown layout; loading indicator for queries >300ms) in src/components/analysis/analysis-view.tsx
+- [x] T029 [US3] Create use-analysis hook (load transactions for date range via db service, compute PeriodAnalysis via calculatePeriodAnalysis, support optional category filter, recompute on filter change) in src/hooks/use-analysis.ts
+- [x] T030 [P] [US3] Create period chart component (Recharts ComposedChart with daily revenue bars, expense bars, and net trend line, ResponsiveContainer, Turkish formatted tooltips, grid lines) in src/components/analysis/period-chart.tsx
+- [x] T031 [P] [US3] Create period metrics component (total revenue, total expense, net result, active days count, average daily revenue, average daily expense, best turnover day, worst turnover day) in src/components/analysis/period-metrics.tsx
+- [x] T032 [P] [US3] Create category breakdown component (revenue categories list and expense categories list, each showing total amount and proportional percentage of category total) in src/components/analysis/category-breakdown.tsx
+- [x] T033 [US3] Create analysis view container (period selector: single month, multi-month range, year-to-date; category filter dropdown; period-chart, period-metrics, category-breakdown layout; loading indicator for queries >300ms) in src/components/analysis/analysis-view.tsx
 
 **Checkpoint**: Period analysis fully functional with charts, metrics, breakdowns, and category filtering
 
