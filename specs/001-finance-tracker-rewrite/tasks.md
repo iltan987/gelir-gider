@@ -40,23 +40,23 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Define shared TypeScript types (Transaction, TransactionType, DailySummary, PeriodAnalysis, View, FilterCondition, FilterOperator, ImportError, BackupTier) in src/types/index.ts
-- [ ] T007 [P] Create category constants (REVENUE_CATEGORIES, EXPENSE_CATEGORIES, isRefundCategory helper, getCategoriesForType helper) in src/lib/categories.ts
-- [ ] T008 [P] Create Turkish formatting utilities (formatCurrency for kuruş→TL display, formatDateTR for Turkish locale date display, parseTurkishAmount for input→kuruş conversion) using date-fns Turkish locale in src/lib/format.ts
-- [ ] T009 [P] Create financial computation helpers (calculateDailySummary from transactions, calculatePeriodAnalysis from date-range transactions, calculateCategoryBreakdown) in src/lib/calculations.ts
-- [ ] T010 Create SQLite database service layer (getDb singleton, execute, select, getMetadata, setMetadata wrapping @tauri-apps/plugin-sql) in src/services/db.ts
-- [ ] T011 Create migration runner service (getCurrentVersion, applyPendingMigrations reading from bundled SQL files, pre-migration backup trigger, version update) in src/services/migrations.ts
-- [ ] T012 Create Zustand UI slice (activeView: daily|analysis|filter|settings, selectedDate, theme: light|dark, setView, setSelectedDate, goToToday, setTheme actions) in src/stores/slices/ui-slice.ts
-- [ ] T013 [P] Create Zustand transaction slice (transactions array, isLoading flag, loadTransactionsByDate, addTransaction, updateTransaction, deleteTransaction, deleteAllForDate actions calling db service) in src/stores/slices/transaction-slice.ts
-- [ ] T014 [P] Create Zustand filter slice (filterConditions array, searchText, filteredResults, addCondition, removeCondition, clearFilters, setSearchText, executeFilter actions) in src/stores/slices/filter-slice.ts
-- [ ] T015 Create combined Zustand store (merge ui-slice, transaction-slice, filter-slice with typed selectors) in src/stores/app-store.ts
-- [ ] T016 Create database initialization provider (connect to DB, run migrations, show loading state, render children when ready) in src/providers/db-provider.tsx
-- [ ] T017 [P] Create navigation bar component (tabs for daily/analysis/filter/settings views, active tab indicator, wired to Zustand setView) using shadcn Tabs in src/components/shared/nav-bar.tsx
-- [ ] T018 [P] Create confirm dialog component (single confirmation mode and double confirmation mode for destructive actions like bulk delete) using shadcn AlertDialog in src/components/shared/confirm-dialog.tsx
-- [ ] T019 [P] Create date picker component (date input, previous/next day navigation, go-to-today button, Turkish locale display via date-fns) in src/components/shared/date-picker.tsx
-- [ ] T020 [P] Create category select component (dropdown filtered by transaction type: revenue or expense, populated from category constants) using shadcn Select in src/components/shared/category-select.tsx
-- [ ] T021 Set up App.tsx with DbProvider wrapper, NavBar, view routing via Zustand activeView (render daily-view, analysis-view, filter-view, or settings-view), and placeholder components for views not yet implemented in src/App.tsx
-- [ ] T022 [P] Create global styles (base layout, side-by-side list layout, grid line styles for tables, Geist font setup) and @media print base rules (hide nav, full-width content) in src/App.css
+- [x] T006 Define shared TypeScript types (Transaction, TransactionType, DailySummary, PeriodAnalysis, View, FilterCondition, FilterOperator, ImportError, BackupTier) in src/types/index.ts
+- [x] T007 [P] Create category constants (REVENUE_CATEGORIES, EXPENSE_CATEGORIES, isRefundCategory helper, getCategoriesForType helper) in src/lib/categories.ts
+- [x] T008 [P] Create Turkish formatting utilities (formatCurrency for kuruş→TL display, formatDateTR for Turkish locale date display, parseTurkishAmount for input→kuruş conversion) using date-fns Turkish locale in src/lib/format.ts
+- [x] T009 [P] Create financial computation helpers (calculateDailySummary from transactions, calculatePeriodAnalysis from date-range transactions, calculateCategoryBreakdown) in src/lib/calculations.ts
+- [x] T010 Create SQLite database service layer (getDb singleton, execute, select, getMetadata, setMetadata wrapping @tauri-apps/plugin-sql) in src/services/db.ts
+- [x] T011 Create migration runner service (getCurrentVersion, applyPendingMigrations reading from bundled SQL files, pre-migration backup trigger, version update) in src/services/migrations.ts
+- [x] T012 Create Zustand UI slice (activeView: daily|analysis|filter|settings, selectedDate, theme: light|dark, setView, setSelectedDate, goToToday, setTheme actions) in src/stores/slices/ui-slice.ts
+- [x] T013 [P] Create Zustand transaction slice (transactions array, isLoading flag, loadTransactionsByDate, addTransaction, updateTransaction, deleteTransaction, deleteAllForDate actions calling db service) in src/stores/slices/transaction-slice.ts
+- [x] T014 [P] Create Zustand filter slice (filterConditions array, searchText, filteredResults, addCondition, removeCondition, clearFilters, setSearchText, executeFilter actions) in src/stores/slices/filter-slice.ts
+- [x] T015 Create combined Zustand store (merge ui-slice, transaction-slice, filter-slice with typed selectors) in src/stores/app-store.ts
+- [x] T016 Create database initialization provider (connect to DB, run migrations, show loading state, render children when ready) in src/providers/db-provider.tsx
+- [x] T017 [P] Create navigation bar component (tabs for daily/analysis/filter/settings views, active tab indicator, wired to Zustand setView) using shadcn Tabs in src/components/shared/nav-bar.tsx
+- [x] T018 [P] Create confirm dialog component (single confirmation mode and double confirmation mode for destructive actions like bulk delete) using shadcn AlertDialog in src/components/shared/confirm-dialog.tsx
+- [x] T019 [P] Create date picker component (date input, previous/next day navigation, go-to-today button, Turkish locale display via date-fns) in src/components/shared/date-picker.tsx
+- [x] T020 [P] Create category select component (dropdown filtered by transaction type: revenue or expense, populated from category constants) using shadcn Select in src/components/shared/category-select.tsx
+- [x] T021 Set up App.tsx with DbProvider wrapper, NavBar, view routing via Zustand activeView (render daily-view, analysis-view, filter-view, or settings-view), and placeholder components for views not yet implemented in src/App.tsx
+- [x] T022 [P] Create global styles (base layout, side-by-side list layout, grid line styles for tables, Geist font setup) and @media print base rules (hide nav, full-width content) in src/App.css
 
 **Checkpoint**: Foundation ready — database operational, store functional, app shell navigable. User story implementation can now begin.
 

@@ -128,3 +128,49 @@
     @apply font-sans;
   }
 }
+
+/* Grid lines for tables */
+.grid-table th,
+.grid-table td {
+  border: 1px solid var(--border);
+}
+
+/* Side-by-side layout for daily view */
+.side-by-side {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Print styles */
+@media print {
+  .print\:hidden,
+  [data-slot="tabs"] {
+    display: none !important;
+  }
+
+  .print-report-header {
+    display: block !important;
+  }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+
+  main {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .grid-table th,
+  .grid-table td {
+    border-color: #000;
+  }
+
+  /* Prevent page breaks inside cards/tables */
+  .no-break {
+    break-inside: avoid;
+  }
+}
