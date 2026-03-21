@@ -85,8 +85,8 @@
 
 **Independent Test**: Add/edit/delete transactions and verify totals update immediately without refresh. View a day with no records — all totals show zero.
 
-- [ ] T027 [US2] Create daily summary component (total revenue, total expense, net result with profit/loss color, profit percentage indicator, zero-state message for empty days) using shadcn Card in src/components/daily/daily-summary.tsx
-- [ ] T028 [US2] Integrate daily summary into daily view (compute summary via calculateDailySummary from transactions, re-render on any transaction change via Zustand selective subscription) in src/components/daily/daily-view.tsx
+- [x] T027 [US2] Create daily summary component (total revenue, total expense, net result with profit/loss color, profit percentage indicator, zero-state message for empty days) using shadcn Card in src/components/daily/daily-summary.tsx
+- [x] T028 [US2] Integrate daily summary into daily view (compute summary via calculateDailySummary from transactions, re-render on any transaction change via Zustand selective subscription) in src/components/daily/daily-view.tsx
 
 **Checkpoint**: Daily view complete with live totals — P1 stories fully delivered
 

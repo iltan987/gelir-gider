@@ -1,9 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Plus } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 import { useTransactions } from "@/hooks/use-transactions";
+import { calculateDailySummary } from "@/lib/calculations";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/shared/date-picker";
+import { DailySummary } from "./daily-summary";
 import { TransactionForm } from "./transaction-form";
 import { TransactionList } from "./transaction-list";
 import type { Transaction, TransactionType } from "@/types";
@@ -72,6 +74,11 @@ export function DailyView() {
         ? `new-${formMode.type}-${formMode.resetKey}`
         : "closed";
 
+  const summary = useMemo(
+    () => calculateDailySummary(selectedDate, transactions),
+    [selectedDate, transactions],
+  );
+
   return (
     <div className="space-y-4">
       <DatePicker
@@ -120,12 +127,18 @@ export function DailyView() {
       {isLoading ? (
         <p className="text-muted-foreground text-sm">Yükleniyor...</p>
       ) : (
-        <TransactionList
-          transactions={transactions}
-          onEdit={handleEdit}
-          onDelete={remove}
-          onDeleteAllByType={removeAllByType}
-        />
+        <>
+          <TransactionList
+            transactions={transactions}
+            onEdit={handleEdit}
+            onDelete={remove}
+            onDeleteAllByType={removeAllByType}
+          />
+          <DailySummary
+            summary={summary}
+            transactionCount={transactions.length}
+          />
+        </>
       )}
     </div>
   );
