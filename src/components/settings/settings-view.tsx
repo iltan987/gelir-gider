@@ -104,7 +104,7 @@ export function SettingsView() {
           {(
             [
               { value: "system", label: "Sistem", icon: Monitor },
-              { value: "light", label: "Aydınlik", icon: Sun },
+              { value: "light", label: "Aydınlık", icon: Sun },
               { value: "dark", label: "Karanlık", icon: Moon },
             ] as const
           ).map(({ value, label, icon: Icon }) => (
