@@ -195,9 +195,9 @@
 
 **Purpose**: Final integration validation and quality checks
 
-- [ ] T051 Run pnpm lint and pnpm format:check, fix any issues across all source files
-- [ ] T052 Validate full startup sequence (DB connect → migrate → auto-backup → app ready) and verify all views render correctly
-- [ ] T053 Run quickstart.md validation — verify all setup steps, commands, and project layout descriptions are accurate
+- [x] T051 Run pnpm lint and pnpm format:check, fix any issues across all source files
+- [x] T052 Validate full startup sequence (DB connect → migrate → auto-backup → app ready) and verify all views render correctly
+- [x] T053 Run quickstart.md validation — verify all setup steps, commands, and project layout descriptions are accurate
 
 ---
 

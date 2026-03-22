@@ -57,14 +57,12 @@ src/
 │   ├── ui/               # shadcn/ui managed components (do not edit manually)
 │   ├── daily/            # Daily transaction view components
 │   ├── analysis/         # Period analysis view components
-│   ├── filter/           # Filtering/exploration view components
-│   ├── settings/         # Settings view components
+│   ├── settings/         # Settings view components (import, backup, theme)
 │   └── shared/           # Shared components (transaction form, category select, etc.)
 ├── stores/
 │   ├── app-store.ts      # Combined Zustand store
 │   ├── slices/
 │   │   ├── transaction-slice.ts  # Transaction CRUD + data
-│   │   ├── filter-slice.ts       # Active filters state
 │   │   └── ui-slice.ts           # View routing, selected date, theme
 ├── services/
 │   ├── db.ts             # SQLite database layer (tauri-plugin-sql wrapper)
@@ -101,7 +99,7 @@ src-tauri/
 - **Amounts**: Stored as integer kuruş (1 TL = 100 kuruş). Display layer handles Turkish formatting.
 - **Dates**: Stored as ISO `YYYY-MM-DD` strings. Display layer handles Turkish locale rendering via date-fns.
 - **Categories**: Defined as TypeScript constants in `src/lib/categories.ts`. Never hardcoded elsewhere.
-- **Views**: Routed via Zustand UI slice (`daily | analysis | filter | settings`). No URL-based routing.
+- **Views**: Routed via Zustand UI slice (`daily | analysis | settings`). No URL-based routing.
 - **Components**: Use shadcn/ui components from `src/components/ui/`. Custom components go in feature directories.
 - **Migrations**: Additive only (CREATE TABLE, ALTER TABLE ADD COLUMN, CREATE INDEX). Never DROP or remove. Pre-migration backup always runs first.
 - **Auto-backups**: GFS tiered retention — session (5), daily (7), weekly (4), monthly (6). All tier decisions at startup. Stored in `{app_data}/auto-backups/`. Pre-migration backups kept indefinitely.
