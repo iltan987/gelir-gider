@@ -8,9 +8,12 @@ import {
   startOfMonth,
   startOfYear,
 } from "date-fns";
+import { useReactToPrint } from "react-to-print";
+import { Printer } from "lucide-react";
 import { useAnalysis } from "@/hooks/use-analysis";
 import type { DateRange } from "@/hooks/use-analysis";
 import { REVENUE_CATEGORIES, EXPENSE_CATEGORIES } from "@/lib/categories";
+import { formatDateTR } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DateInput } from "@/components/shared/date-input";
@@ -150,6 +153,12 @@ export function AnalysisView() {
     setNoteFilter,
   } = useAnalysis();
 
+  const printRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: () => `Analiz_${dateRange.start}_${dateRange.end}`,
+  });
+
   const [activePreset, setActivePreset] = useState<number>(0);
   const [filterMode, setFilterMode] = useState<DateFilterMode>("between");
   const [amount, setAmount] = useState(1);
@@ -183,7 +192,7 @@ export function AnalysisView() {
   return (
     <div className="space-y-4">
       {/* Preset buttons */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {PRESETS.map((preset, i) => (
           <Button
             key={preset.label}
@@ -194,6 +203,15 @@ export function AnalysisView() {
             {preset.label}
           </Button>
         ))}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="ml-auto"
+          onClick={() => handlePrint()}
+          aria-label="Yazdır"
+        >
+          <Printer className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Custom date filter */}
@@ -310,38 +328,48 @@ export function AnalysisView() {
       </div>
 
       {/* Results */}
-      <div
-        className={`space-y-4 ${isLoading ? "opacity-50 transition-opacity" : "transition-opacity"}`}
-      >
-        <PeriodChart analysis={analysis} />
-        <PeriodMetrics analysis={analysis} />
-        <CategoryBreakdown transactions={transactions} />
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const next = !showTable;
-              setShowTable(next);
-              localStorage.setItem("analysis-show-table", String(next));
-              if (next) {
-                requestAnimationFrame(() => {
-                  tableRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                  });
-                });
-              }
-            }}
-          >
-            {showTable ? "İşlemleri Gizle" : "İşlemleri Göster"}
-          </Button>
+      <div ref={printRef}>
+        <div className="print-report-header">
+          <h1>
+            Analiz Raporu - {formatDateTR(dateRange.start)} /{" "}
+            {formatDateTR(dateRange.end)}
+          </h1>
+          <p>Yazdırma tarihi: {formatDateTR(new Date())}</p>
         </div>
-        {showTable && (
-          <div ref={tableRef}>
-            <AnalysisTable transactions={transactions} />
+
+        <div
+          className={`space-y-4 ${isLoading ? "opacity-50 transition-opacity" : "transition-opacity"}`}
+        >
+          <PeriodChart analysis={analysis} />
+          <PeriodMetrics analysis={analysis} />
+          <CategoryBreakdown transactions={transactions} />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const next = !showTable;
+                setShowTable(next);
+                localStorage.setItem("analysis-show-table", String(next));
+                if (next) {
+                  requestAnimationFrame(() => {
+                    tableRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "nearest",
+                    });
+                  });
+                }
+              }}
+            >
+              {showTable ? "İşlemleri Gizle" : "İşlemleri Göster"}
+            </Button>
           </div>
-        )}
+          {showTable && (
+            <div ref={tableRef}>
+              <AnalysisTable transactions={transactions} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

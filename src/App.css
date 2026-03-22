@@ -143,35 +143,100 @@
   gap: 1rem;
 }
 
+/* Report header - hidden on screen, visible in print */
+.print-report-header {
+  display: none;
+}
+
 /* Print styles */
 @media print {
+  /* Hide interactive elements */
   .print\:hidden,
-  [data-slot="tabs"] {
+  header,
+  button,
+  input,
+  select {
     display: none !important;
   }
 
+  /* Show report header */
   .print-report-header {
     display: block !important;
+    margin-bottom: 16pt;
+    padding-bottom: 8pt;
+    border-bottom: 2pt solid #000;
+  }
+
+  .print-report-header h1 {
+    font-size: 16pt;
+    font-weight: 700;
+    margin: 0 0 4pt 0;
+  }
+
+  .print-report-header p {
+    font-size: 9pt;
+    color: #555;
+    margin: 0;
+  }
+
+  /* Base reset */
+  html {
+    font-size: 11pt;
   }
 
   body {
-    font-size: 12pt;
     color: #000;
     background: #fff;
   }
 
-  main {
+  /* Remove app shell constraints */
+  .app-shell {
+    display: block !important;
+    height: auto !important;
+  }
+
+  .app-shell > main {
     padding: 0 !important;
     overflow: visible !important;
   }
 
+  /* Tables */
   .grid-table th,
   .grid-table td {
-    border-color: #000;
+    border-color: #000 !important;
+    padding: 4pt 6pt;
+    font-size: 10pt;
   }
 
-  /* Prevent page breaks inside cards/tables */
-  .no-break {
+  .grid-table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Side-by-side layout */
+  .side-by-side {
+    grid-template-columns: 1fr 1fr;
+    gap: 12pt;
+  }
+
+  /* Cards */
+  [data-slot="card"] {
+    border: 1px solid #ccc;
+    box-shadow: none !important;
     break-inside: avoid;
+  }
+
+  /* Page break control */
+  .print-no-break {
+    break-inside: avoid;
+  }
+
+  .print-page-break {
+    break-before: page;
+  }
+
+  @page {
+    margin: 15mm;
   }
 }

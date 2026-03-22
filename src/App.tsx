@@ -29,7 +29,7 @@ function PlaceholderView({ name }: { name: string }) {
 function App() {
   return (
     <DbProvider>
-      <div className="flex h-screen flex-col">
+      <div className="app-shell flex h-screen flex-col">
         <header className="border-b p-2">
           <NavBar />
         </header>

@@ -36,7 +36,7 @@ function TransactionColumn({
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between print:mb-1">
         <h3 className={`text-sm font-semibold ${headerColor}`}>{title}</h3>
         {items.length > 0 && (
           <ConfirmDialog
@@ -66,7 +66,7 @@ function TransactionColumn({
               <th className="p-2 text-left font-medium">Tutar</th>
               <th className="p-2 text-left font-medium">Kategori</th>
               <th className="p-2 text-left font-medium">Not</th>
-              <th className="w-20 p-2 text-right font-medium"></th>
+              <th className="w-20 p-2 text-right font-medium print:hidden"></th>
             </tr>
           </thead>
           <tbody>
@@ -79,7 +79,7 @@ function TransactionColumn({
                 <td className="text-muted-foreground max-w-50 truncate p-2">
                   {t.note ?? "-"}
                 </td>
-                <td className="p-2 text-right">
+                <td className="p-2 text-right print:hidden">
                   <div className="flex justify-end gap-1">
                     <Button
                       variant="ghost"

@@ -1,9 +1,11 @@
-import { useState, useCallback, useMemo } from "react";
-import { Plus } from "lucide-react";
+import { useState, useCallback, useMemo, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { Plus, Printer } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 import { useTransactions } from "@/hooks/use-transactions";
 import { calculateDailySummary } from "@/lib/calculations";
 import { Button } from "@/components/ui/button";
+import { formatDateTR } from "@/lib/format";
 import { DatePicker } from "@/components/shared/date-picker";
 import { DailySummary } from "./daily-summary";
 import { TransactionForm } from "./transaction-form";
@@ -21,6 +23,12 @@ export function DailyView() {
   const goToToday = useAppStore((s) => s.goToToday);
   const { transactions, isLoading, add, update, remove, removeAllByType } =
     useTransactions();
+
+  const printRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: () => `Günlük_Rapor_${selectedDate}`,
+  });
 
   const [formMode, setFormMode] = useState<FormMode>({ kind: "closed" });
 
@@ -81,13 +89,23 @@ export function DailyView() {
 
   return (
     <div className="space-y-4">
-      <DatePicker
-        value={selectedDate}
-        onChange={setSelectedDate}
-        onGoToToday={goToToday}
-      />
+      <div className="flex items-center justify-between">
+        <DatePicker
+          value={selectedDate}
+          onChange={setSelectedDate}
+          onGoToToday={goToToday}
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => handlePrint()}
+          aria-label="Yazdır"
+        >
+          <Printer className="h-4 w-4" />
+        </Button>
+      </div>
 
-      <div className="side-by-side">
+      <div className="side-by-side print:hidden">
         <Button
           variant="outline"
           className={
@@ -124,22 +142,29 @@ export function DailyView() {
         />
       )}
 
-      {isLoading ? (
-        <p className="text-muted-foreground text-sm">Yükleniyor...</p>
-      ) : (
-        <>
-          <TransactionList
-            transactions={transactions}
-            onEdit={handleEdit}
-            onDelete={remove}
-            onDeleteAllByType={removeAllByType}
-          />
-          <DailySummary
-            summary={summary}
-            transactionCount={transactions.length}
-          />
-        </>
-      )}
+      <div ref={printRef}>
+        <div className="print-report-header">
+          <h1>Günlük Rapor - {formatDateTR(selectedDate)}</h1>
+          <p>Yazdırma tarihi: {formatDateTR(new Date())}</p>
+        </div>
+
+        {isLoading ? (
+          <p className="text-muted-foreground text-sm">Yükleniyor...</p>
+        ) : (
+          <div className="space-y-4">
+            <TransactionList
+              transactions={transactions}
+              onEdit={handleEdit}
+              onDelete={remove}
+              onDeleteAllByType={removeAllByType}
+            />
+            <DailySummary
+              summary={summary}
+              transactionCount={transactions.length}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
