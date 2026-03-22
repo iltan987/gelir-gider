@@ -4,6 +4,7 @@ import { NavBar } from "@/components/shared/nav-bar";
 import { useAppStore } from "@/stores/app-store";
 import { DailyView } from "@/components/daily/daily-view";
 import { AnalysisView } from "@/components/analysis/analysis-view";
+import { SettingsView } from "@/components/settings/settings-view";
 
 function ViewRouter() {
   const activeView = useAppStore((s) => s.activeView);
@@ -14,16 +15,8 @@ function ViewRouter() {
     case "analysis":
       return <AnalysisView />;
     case "settings":
-      return <PlaceholderView name="Ayarlar" />;
+      return <SettingsView />;
   }
-}
-
-function PlaceholderView({ name }: { name: string }) {
-  return (
-    <div className="text-muted-foreground flex flex-1 items-center justify-center">
-      {name} görünümü henüz hazır değil
-    </div>
-  );
 }
 
 function App() {

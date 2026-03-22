@@ -9,12 +9,19 @@ import {
   startOfYear,
 } from "date-fns";
 import { useReactToPrint } from "react-to-print";
-import { Printer } from "lucide-react";
+import { EllipsisVertical, FileSpreadsheet, Printer } from "lucide-react";
 import { useAnalysis } from "@/hooks/use-analysis";
+import { exportPeriod } from "@/services/export";
 import type { DateRange } from "@/hooks/use-analysis";
 import { REVENUE_CATEGORIES, EXPENSE_CATEGORIES } from "@/lib/categories";
 import { formatDateTR } from "@/lib/format";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { DateInput } from "@/components/shared/date-input";
 import {
@@ -203,15 +210,34 @@ export function AnalysisView() {
             {preset.label}
           </Button>
         ))}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="ml-auto"
-          onClick={() => handlePrint()}
-          aria-label="Yazdır"
-        >
-          <Printer className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-auto"
+                aria-label="Islemler"
+              >
+                <EllipsisVertical className="h-4 w-4" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end" className="w-auto">
+            <DropdownMenuItem
+              onClick={() =>
+                exportPeriod(dateRange.start, dateRange.end, categoryFilter)
+              }
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Excel'e Aktar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePrint()}>
+              <Printer className="mr-2 h-4 w-4" />
+              Yazdır
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Custom date filter */}

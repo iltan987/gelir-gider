@@ -1,10 +1,17 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import { Plus, Printer } from "lucide-react";
+import { Plus, EllipsisVertical, FileSpreadsheet, Printer } from "lucide-react";
 import { useAppStore } from "@/stores/app-store";
 import { useTransactions } from "@/hooks/use-transactions";
 import { calculateDailySummary } from "@/lib/calculations";
+import { exportDay } from "@/services/export";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { formatDateTR } from "@/lib/format";
 import { DatePicker } from "@/components/shared/date-picker";
 import { DailySummary } from "./daily-summary";
@@ -95,14 +102,27 @@ export function DailyView() {
           onChange={setSelectedDate}
           onGoToToday={goToToday}
         />
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => handlePrint()}
-          aria-label="Yazdır"
-        >
-          <Printer className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button variant="ghost" size="icon" aria-label="Islemler">
+                <EllipsisVertical className="h-4 w-4" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end" className="w-auto">
+            <DropdownMenuItem
+              onClick={() => exportDay(selectedDate, transactions)}
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Excel'e Aktar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePrint()}>
+              <Printer className="mr-2 h-4 w-4" />
+              Yazdir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="side-by-side print:hidden">

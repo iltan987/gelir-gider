@@ -116,9 +116,9 @@
 
 **Independent Test**: Print from daily view — verify header "Günlük Rapor - {Turkish date}", formatted data, no nav chrome. Print from analysis view — verify charts, metrics, breakdowns render on paper.
 
-- [ ] T034 [US4] Implement comprehensive print styles (@media print rules for report header visibility, nav/form hiding, table grid lines, chart sizing, page break control, paper-optimized font sizes) in src/App.css
-- [ ] T035 [P] [US4] Add print trigger to daily view (useReactToPrint targeting print-ready content ref, report header "Günlük Rapor - {date in Turkish}", print date stamp) in src/components/daily/daily-view.tsx
-- [ ] T036 [P] [US4] Add print trigger to analysis view (useReactToPrint targeting print-ready content ref, report header with period label, print date stamp, chart print optimization) in src/components/analysis/analysis-view.tsx
+- [x] T034 [US4] Implement comprehensive print styles (@media print rules for report header visibility, nav/form hiding, table grid lines, chart sizing, page break control, paper-optimized font sizes) in src/App.css
+- [x] T035 [P] [US4] Add print trigger to daily view (useReactToPrint targeting print-ready content ref, report header "Günlük Rapor - {date in Turkish}", print date stamp) in src/components/daily/daily-view.tsx
+- [x] T036 [P] [US4] Add print trigger to analysis view (useReactToPrint targeting print-ready content ref, report header with period label, print date stamp, chart print optimization) in src/components/analysis/analysis-view.tsx
 
 **Checkpoint**: Both daily and period views produce print-ready reports via native print dialog
 
@@ -142,9 +142,9 @@
 
 **Independent Test**: Export a day — verify spreadsheet matches app data. Export a month — verify daily grouping and summary totals. Export with category filter active — verify only filtered data exported.
 
-- [ ] T040 [US6] Create export service (buildDaySheet, buildMonthSheet, buildRangeSheet with SheetJS; transaction detail rows, daily subtotals, period summary with profit ratio; category filter support; file save dialog via @tauri-apps/plugin-dialog) per file-io contract in src/services/export.ts
-- [ ] T041 [P] [US6] Add export day action button to daily view (export current date's transactions via export service) in src/components/daily/daily-view.tsx
-- [ ] T042 [P] [US6] Add export period action button to analysis view (export current period with optional category filter via export service) in src/components/analysis/analysis-view.tsx
+- [x] T040 [US6] Create export service (buildDaySheet, buildMonthSheet, buildRangeSheet with SheetJS; transaction detail rows, daily subtotals, period summary with profit ratio; category filter support; file save dialog via @tauri-apps/plugin-dialog) per file-io contract in src/services/export.ts
+- [x] T041 [P] [US6] Add export day action button to daily view (export current date's transactions via export service) in src/components/daily/daily-view.tsx
+- [x] T042 [P] [US6] Add export period action button to analysis view (export current period with optional category filter via export service) in src/components/analysis/analysis-view.tsx
 
 **Checkpoint**: Export produces valid .xlsx files from daily and analysis views, with category filter support
 
@@ -156,8 +156,8 @@
 
 **Independent Test**: Import a valid spreadsheet — records appended correctly. Import a file with invalid rows — each error reported with specific message. Cancel after preview — no data changed.
 
-- [ ] T043 [US7] Create import service (parse .xlsx/.xls via SheetJS, validate each row: date format, type revenue/expense/gelir/gider, non-zero amount, category in predefined list; return valid rows and ImportError array; batch insert valid rows) per file-io contract in src/services/import.ts
-- [ ] T044 [US7] Add import workflow to settings view (file selection via @tauri-apps/plugin-dialog open, parse-and-validate preview showing valid count and error rows with messages, confirm/cancel buttons, execute additive import, success feedback) in src/components/settings/settings-view.tsx
+- [x] T043 [US7] Create import service (parse .xlsx/.xls via SheetJS, validate each row: date format, type revenue/expense/gelir/gider, non-zero amount, category in predefined list; return valid rows and ImportError array; batch insert valid rows) per file-io contract in src/services/import.ts
+- [x] T044 [US7] Add import workflow to settings view (file selection via @tauri-apps/plugin-dialog open, parse-and-validate preview showing valid count and error rows with messages, confirm/cancel buttons, execute additive import, success feedback) in src/components/settings/settings-view.tsx
 
 **Checkpoint**: Import workflow with full validation pipeline, error reporting, and safe additive import
 
