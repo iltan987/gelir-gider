@@ -120,9 +120,9 @@ export function calculateCategoryBreakdown(transactions: Transaction[]): {
       .map(([category, amount]) => ({
         category,
         total: amount,
-        percentage: total > 0 ? (amount / total) * 100 : 0,
+        percentage: total > 0 ? (Math.abs(amount) / total) * 100 : 0,
       }))
-      .sort((a, b) => b.total - a.total);
+      .sort((a, b) => Math.abs(b.total) - Math.abs(a.total));
 
   return {
     revenue: toArray(revMap, revTotal),
