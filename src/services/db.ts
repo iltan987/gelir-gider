@@ -11,6 +11,13 @@ export async function getDb(): Promise<Database> {
   return db;
 }
 
+export async function closeDb(): Promise<void> {
+  if (db) {
+    await db.close();
+    db = null;
+  }
+}
+
 export async function execute(
   query: string,
   bindValues?: unknown[],

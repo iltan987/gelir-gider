@@ -5,8 +5,8 @@ import {
   message,
 } from "@tauri-apps/plugin-dialog";
 import { readFile, writeFile } from "@tauri-apps/plugin-fs";
-import { relaunch } from "@tauri-apps/plugin-process";
 import { appConfigDir } from "@tauri-apps/api/path";
+import { closeDb } from "@/services/db";
 
 async function getDbPath(): Promise<string> {
   const dir = await appConfigDir();
@@ -60,11 +60,12 @@ export async function restoreFromFile(): Promise<boolean> {
     const dbPath = await getDbPath();
     const data = await readFile(filePath);
     await writeFile(dbPath, data);
-    await message("Geri yükleme tamamlandı. Uygulama yeniden başlatılacak.", {
+    await closeDb();
+    await message("Geri yükleme tamamlandı. Sayfa yeniden yüklenecek.", {
       title: "Başarılı",
       kind: "info",
     });
-    await relaunch();
+    window.location.reload();
     return true;
   } catch (err) {
     console.error("Restore failed:", err);

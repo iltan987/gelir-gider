@@ -30,6 +30,7 @@
       "identifier": "fs:allow-read-dir",
       "allow": [{ "path": "$APPDATA/**" }]
     },
+    "opener:allow-open-path",
     "process:default"
   ]
 }

@@ -1,6 +1,7 @@
 import * as XLSX from "xlsx";
 import { save, message } from "@tauri-apps/plugin-dialog";
 import { writeFile } from "@tauri-apps/plugin-fs";
+import { openPath } from "@tauri-apps/plugin-opener";
 import { select } from "@/services/db";
 import { formatDateTR } from "@/lib/format";
 import { calculateDailySummary } from "@/lib/calculations";
@@ -118,6 +119,7 @@ async function saveWorkbook(
   try {
     const data = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     await writeFile(path, new Uint8Array(data));
+    await openPath(path);
     return true;
   } catch (err) {
     console.error("Export failed:", err);
