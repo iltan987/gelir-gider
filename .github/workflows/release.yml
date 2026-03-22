@@ -42,7 +42,7 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: "v__VERSION__"
-          releaseBody: "Yeni sürümu indirmek icin asagidaki dosyalari kullanabilirsiniz."
+          releaseBody: "Yeni sürümü indirmek için aşağıdaki dosyaları kullanabilirsiniz."
           releaseDraft: false
           prerelease: false
           includeUpdaterJson: true
