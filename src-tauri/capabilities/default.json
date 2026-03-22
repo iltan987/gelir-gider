@@ -20,20 +20,10 @@
       "identifier": "fs:allow-mkdir",
       "allow": [{ "path": "$APPDATA/**" }]
     },
-    "fs:read-files",
     "fs:allow-appconfig-read-recursive",
-    "fs:write-files",
     "fs:allow-appconfig-write-recursive",
     {
-      "identifier": "fs:allow-copy-file",
-      "allow": [{ "path": "$APPDATA/**" }]
-    },
-    {
       "identifier": "fs:allow-remove",
-      "allow": [{ "path": "$APPDATA/**" }]
-    },
-    {
-      "identifier": "fs:allow-rename",
       "allow": [{ "path": "$APPDATA/**" }]
     },
     {
