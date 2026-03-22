@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "gelir-gider",
+  "productName": "Gelir Gider",
   "version": "0.1.0",
   "identifier": "com.icaner.gelir-gider",
   "build": {
