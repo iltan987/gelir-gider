@@ -32,6 +32,9 @@ export default defineConfig(async () => ({
           if (id.includes("node_modules/@base-ui")) {
             return "base-ui";
           }
+          if (id.includes("node_modules/xlsx")) {
+            return "xlsx";
+          }
         },
       },
     },
