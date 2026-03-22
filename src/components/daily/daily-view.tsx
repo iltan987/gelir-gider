@@ -119,7 +119,7 @@ export function DailyView() {
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handlePrint()}>
               <Printer className="mr-2 h-4 w-4" />
-              Yazdir
+              Yazdır
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
