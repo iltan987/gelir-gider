@@ -1,6 +1,6 @@
 # Tasks: Financial Tracker Application
 
-**Input**: Design documents from `/specs/001-finance-tracker-rewrite/`
+**Input**: Design documents from `/specs/001-finance-tracker/`
 **Prerequisites**: plan.md, spec.md, data-model.md, research.md, quickstart.md, contracts/database.md, contracts/file-io.md
 
 **Tests**: Not included — manual testing only per project constitution.

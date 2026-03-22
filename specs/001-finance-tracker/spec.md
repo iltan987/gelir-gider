@@ -1,9 +1,8 @@
 # Feature Specification: Financial Tracker Application
 
-**Feature Branch**: `001-finance-tracker-rewrite`
 **Created**: 2026-03-21
 **Status**: Draft
-**Input**: Full rewrite of a single-user financial operations tool for a Finance and Administration Manager. The application tracks daily revenue and expense transactions, provides period-based analysis, supports import/export and backup/restore workflows, and produces print-ready reports. All interactions use Turkish locale conventions.
+**Input**: A single-user financial operations tool for a Finance and Administration Manager. The application tracks daily revenue and expense transactions, provides period-based analysis, supports import/export and backup/restore workflows, and produces print-ready reports. All interactions use Turkish locale conventions.
 
 ## User Scenarios & Testing _(mandatory)_
 

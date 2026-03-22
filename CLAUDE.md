@@ -50,9 +50,6 @@ src-tauri/             # Tauri backend
 - **Auto-backups**: GFS tiered retention — session (keep 5), daily (keep 7), weekly (keep 4), monthly (keep 6). All tier decisions at startup. Pre-migration backups kept indefinitely. Failure never blocks user.
 - **No tests/ directory**: Manual testing per constitution. No automated test infrastructure.
 
-## Current Feature
+## Specs
 
-Branch `001-finance-tracker-rewrite` — specs in `specs/001-finance-tracker-rewrite/`
-
-<!-- MANUAL ADDITIONS START -->
-<!-- MANUAL ADDITIONS END -->
+Design documents in `specs/001-finance-tracker/`

@@ -1,6 +1,6 @@
 # Data Model: Financial Tracker Application
 
-**Branch**: `001-finance-tracker-rewrite` | **Date**: 2026-03-21
+**Date**: 2026-03-21
 
 ## Entities
 
@@ -125,6 +125,21 @@ All future schema changes MUST follow these rules to prevent data loss (FR-024, 
 3. **Date**: Must be a valid ISO 8601 date string (`YYYY-MM-DD`). No inherent restriction on past/future dates.
 4. **Refund logic**: When category is `İADE`, the amount is stored as a negative value regardless of user input sign.
 5. **Type**: Must be exactly `'revenue'` or `'expense'`. Enforced by CHECK constraint.
+
+### UpdateStatus (Transient UI State, Not Stored)
+
+Tracks the state of a manual update check. Lives only in component-level React state, not in the Zustand store or database.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `status` | `"idle" \| "checking" \| "available" \| "downloading" \| "error" \| "upToDate"` | Current check/download state |
+| `version` | `string \| null` | Available update version (when `status === "available"` or `"downloading"`) |
+| `body` | `string \| null` | Release notes markdown (when `status === "available"`) |
+| `date` | `string \| null` | Release date ISO string |
+| `progress` | `number` | Download progress 0-100 (when `status === "downloading"`) |
+| `error` | `string \| null` | Error message (when `status === "error"`) |
+
+**Design decision**: Not stored in Zustand because update state is ephemeral (only relevant while the Settings view is open) and has no consumers outside the update checker card. Component-local state via `useState`/`useReducer` is simpler and avoids polluting the global store.
 
 ## State Transitions
 

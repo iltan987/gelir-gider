@@ -1,6 +1,6 @@
 # Quickstart: Financial Tracker Application
 
-**Branch**: `001-finance-tracker-rewrite` | **Date**: 2026-03-21
+**Date**: 2026-03-21
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@
 
 ```bash
 # Clone and checkout
-git checkout 001-finance-tracker-rewrite
+git checkout main
 
 # Install frontend dependencies
 pnpm install
@@ -92,6 +92,43 @@ src-tauri/
 │   └── default.json      # Tauri capabilities (permissions for plugins)
 ├── Cargo.toml            # Rust dependencies
 └── tauri.conf.json       # Tauri configuration (including SQL plugin preload)
+```
+
+## Building for Windows (via GitHub Actions)
+
+Development is done on Linux. Windows builds are produced by GitHub Actions.
+
+### One-Time Setup
+
+```bash
+# Generate update signing keys
+pnpm tauri signer generate -w ~/.tauri/gelir-gider.key
+
+# Add the public key to tauri.conf.json > plugins.updater.pubkey
+# Add the private key content as GitHub secret: TAURI_SIGNING_PRIVATE_KEY
+# Add the password (or empty string) as GitHub secret: TAURI_SIGNING_PRIVATE_KEY_PASSWORD
+```
+
+### Creating a Release
+
+1. Update version in `src-tauri/tauri.conf.json` and `package.json`
+2. Push to the `release` branch (or trigger workflow manually via GitHub Actions UI)
+3. GitHub Actions builds the Windows NSIS installer
+4. A draft GitHub Release is created with:
+   - `gelir-gider_<version>_x64-setup.exe` (NSIS installer, Turkish)
+   - `latest.json` (updater metadata for in-app update checks)
+5. Review the draft release and publish it
+
+### Manual Windows Build (on a Windows machine)
+
+```bash
+# Set signing env vars
+$env:TAURI_SIGNING_PRIVATE_KEY = "content of private key"
+$env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = ""
+
+# Build
+pnpm tauri build
+# Output: src-tauri/target/release/bundle/nsis/gelir-gider_<version>_x64-setup.exe
 ```
 
 ## Key Conventions

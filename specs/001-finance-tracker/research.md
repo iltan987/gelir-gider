@@ -1,6 +1,6 @@
 # Research: Financial Tracker Application
 
-**Branch**: `001-finance-tracker-rewrite` | **Date**: 2026-03-21
+**Date**: 2026-03-21
 
 ## Storage Solution
 
@@ -139,3 +139,120 @@
 - Periodic session interval for intra-day coverage during long work sessions
 - Maximum ~22 files + pre-migration = ~110 MB worst case (bounded growth)
 - Auto-backup failure is silently logged, never blocks the user
+
+---
+
+## Windows Build & Distribution (GitHub Actions)
+
+**Decision**: `tauri-apps/tauri-action@v0` on `windows-latest` runner
+
+**Rationale**: Official Tauri GitHub Action handles the full build pipeline: installs Rust, builds the Tauri app, produces NSIS `.exe` installer, generates `latest.json` for the updater, and uploads artifacts to GitHub Releases. The development machine runs Linux, so cross-compilation is not practical for Windows (NSIS toolchain + MSVC linker are Windows-native). GitHub Actions provides free Windows runners.
+
+**Alternatives considered**:
+- Local cross-compilation (Linux to Windows): Tauri's NSIS bundler requires the NSIS toolchain which is Windows-only. Cross-compilation would require Wine + NSIS in a Docker container, which is fragile and unsupported by Tauri. Rejected.
+- Self-hosted Windows runner: Adds infrastructure complexity for a single-user app. GitHub-hosted runners are free for public repos. Rejected.
+- WiX instead of NSIS: WiX produces `.msi` files but cannot be cross-compiled and does not support multi-language installers as cleanly. NSIS produces a single `.exe` with embedded language support. Chose NSIS.
+
+**Workflow design**:
+- Trigger: `workflow_dispatch` (manual) + push to `release` branch
+- Matrix: `windows-latest` only (no macOS/Linux builds needed per user requirement)
+- Package manager: pnpm (matches project's `packageManager` field)
+- Release: Draft release with NSIS `.exe` + `latest.json` updater artifact
+- Signing: `TAURI_SIGNING_PRIVATE_KEY` stored as GitHub secret for update signature generation
+
+**Packages**: None (GitHub Actions only, no new local dependencies)
+
+---
+
+## NSIS Turkish Installer
+
+**Decision**: NSIS with Turkish as default language
+
+**Rationale**: NSIS supports Turkish (`"Turkish"` in the languages array) as a built-in language. Tauri generates the NSIS installer scripts automatically. The `languages` field in `tauri.conf.json > bundle.windows.nsis` controls which languages are available. Setting `["Turkish"]` makes Turkish the only (and default) language. No `displayLanguageSelector` needed since there is only one language.
+
+**Configuration** (in `tauri.conf.json`):
+```json
+{
+  "bundle": {
+    "windows": {
+      "nsis": {
+        "languages": ["Turkish"],
+        "installMode": "both"
+      }
+    }
+  }
+}
+```
+
+**Alternatives considered**:
+- `["Turkish", "English"]` with `displayLanguageSelector: true`: Adds unnecessary complexity. The sole user is Turkish-speaking. If English is needed later, it can be added. Rejected for now.
+- WiX installer: Produces `.msi` but has weaker multi-language support and requires a different toolchain. Rejected.
+- Custom `.nsh` translation file: Only needed if Tauri's built-in NSIS messages need customization. The built-in Turkish translation covers standard installer messages (install, uninstall, close app, etc.). Can be added later if specific messages need tweaking.
+
+**Key NSIS config fields**:
+- `installMode: "both"` - Lets user choose per-user or per-machine install
+- `languages: ["Turkish"]` - Turkish-only installer
+
+---
+
+## Update Checker (Manual)
+
+**Decision**: `tauri-plugin-updater` with manual trigger from Settings
+
+**Rationale**: Official Tauri 2 updater plugin from `plugins-workspace`. Provides a JavaScript API (`check()`, `downloadAndInstall()`) that queries a remote endpoint for a `latest.json` file, compares versions, downloads the update with progress events, and installs it. The user explicitly requested no auto-check - the check is triggered by a button in Settings.
+
+**Update flow**:
+1. User clicks "Guncelleme Kontrol Et" button in Settings
+2. App calls `check()` from `@tauri-apps/plugin-updater`
+3. If no update: show "Guncel surum kullaniyorsunuz (v0.1.0)"
+4. If update available: show version + release notes + "Guncelle" button
+5. User clicks "Guncelle": `downloadAndInstall()` with progress callback
+6. Show progress bar during download
+7. On completion: `relaunch()` from `@tauri-apps/plugin-process`
+8. On error: show error message, non-blocking
+
+**Endpoint**: `https://github.com/iltan987/gelir-gider/releases/latest/download/latest.json`
+- Generated automatically by `tauri-apps/tauri-action@v0` with `includeUpdaterJson: true`
+- Static JSON file with version, signature, and platform-specific download URLs
+
+**Signing**:
+- Generate key pair: `pnpm tauri signer generate -w ~/.tauri/gelir-gider.key`
+- Public key goes in `tauri.conf.json > plugins.updater.pubkey`
+- Private key stored as `TAURI_SIGNING_PRIVATE_KEY` GitHub secret
+- Password stored as `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` GitHub secret (empty string if none)
+
+**Alternatives considered**:
+- Auto-check on startup: User explicitly requested no auto-check. Would add network dependency to startup flow. Rejected.
+- Custom update server: Unnecessary when GitHub Releases provides free, reliable hosting with CDN. Rejected.
+- Sparkle/WinSparkle: External update frameworks that duplicate what Tauri's built-in updater provides. Rejected.
+
+**Packages**:
+- Rust: `tauri-plugin-updater` v2 (desktop-only, `cfg(not(any(target_os = "android", target_os = "ios")))`)
+- Frontend: `@tauri-apps/plugin-updater`
+
+**Capabilities needed**:
+```json
+"updater:default",
+"updater:allow-check",
+"updater:allow-download-and-install"
+```
+
+**tauri.conf.json updater config**:
+```json
+{
+  "bundle": {
+    "createUpdaterArtifacts": "v2Compatible"
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "<GENERATED_PUBLIC_KEY>",
+      "endpoints": [
+        "https://github.com/iltan987/gelir-gider/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}
+```
