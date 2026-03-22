@@ -26,17 +26,32 @@
   "plugins": {
     "sql": {
       "preload": ["sqlite:gelir-gider.db"]
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDY3NkJCMDJFNDdBRTNDRDQKUldUVVBLNUhMckJyWi92S0RHMXNJVEE2Rnd3VGRYU0JTNktNRW1RU3JEOC9ENzRKb0RRaFF3Nk8K",
+      "endpoints": [
+        "https://github.com/iltan987/gelir-gider/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
-      "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "windows": {
+      "nsis": {
+        "languages": ["Turkish"],
+        "installMode": "both"
+      }
+    }
   }
 }

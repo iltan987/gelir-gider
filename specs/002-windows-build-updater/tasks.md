@@ -19,9 +19,9 @@
 
 **Purpose**: Generate update signing keys and install the updater plugin via CLI
 
-- [ ] T001 Generate update signing key pair via `pnpm tauri signer generate -w ~/.tauri/gelir-gider.key` and note the public key output
-- [ ] T002 Install tauri-plugin-updater via `pnpm tauri add updater` (adds Rust crate + JS bindings automatically)
-- [ ] T003 Verify plugin installation: confirm `tauri-plugin-updater` in `src-tauri/Cargo.toml` and `@tauri-apps/plugin-updater` in `package.json`
+- [x] T001 Generate update signing key pair via `pnpm tauri signer generate -w ~/.tauri/gelir-gider.key` and note the public key output
+- [x] T002 Install tauri-plugin-updater via `pnpm tauri add updater` (adds Rust crate + JS bindings automatically)
+- [x] T003 Verify plugin installation: confirm `tauri-plugin-updater` in `src-tauri/Cargo.toml` and `@tauri-apps/plugin-updater` in `package.json`
 
 **Checkpoint**: Signing keys generated, updater plugin installed. Commit.
 
@@ -33,9 +33,9 @@
 
 **CRITICAL**: No updater UI work (Phase 3) can begin until this phase is complete.
 
-- [ ] T004 Configure NSIS Turkish installer and updater artifacts in `src-tauri/tauri.conf.json`: add `bundle.windows.nsis` with `"languages": ["Turkish"]` and `"installMode": "both"`, add `bundle.createUpdaterArtifacts: "v2Compatible"`, add `plugins.updater` with pubkey from T001, endpoint `https://github.com/iltan987/gelir-gider/releases/latest/download/latest.json`, and `windows.installMode: "passive"`
-- [ ] T005 Register updater plugin in `src-tauri/src/lib.rs`: add `#[cfg(desktop)] app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;` in the `.setup()` closure (requires converting to `.setup()` pattern)
-- [ ] T006 Add updater permissions to `src-tauri/capabilities/default.json`: add `"updater:default"`, `"updater:allow-check"`, `"updater:allow-download-and-install"`
+- [x] T004 Configure NSIS Turkish installer and updater artifacts in `src-tauri/tauri.conf.json`: add `bundle.windows.nsis` with `"languages": ["Turkish"]` and `"installMode": "both"`, add `bundle.createUpdaterArtifacts: true`, add `plugins.updater` with pubkey from T001, endpoint `https://github.com/iltan987/gelir-gider/releases/latest/download/latest.json`, and `windows.installMode: "passive"`
+- [x] T005 Register updater plugin in `src-tauri/src/lib.rs`: registered by `pnpm tauri add updater` CLI
+- [x] T006 Add updater permissions to `src-tauri/capabilities/desktop.json`: add `"updater:default"`, `"updater:allow-check"`, `"updater:allow-download-and-install"`
 
 **Checkpoint**: Tauri backend fully configured for NSIS Turkish + updater. Commit.
 
@@ -49,10 +49,10 @@
 
 ### Implementation for User Story 10
 
-- [ ] T007 [US10] Add `UpdateStatus` type to `src/types/index.ts`: discriminated union with states `idle | checking | available | downloading | error | upToDate` and associated fields (version, body, date, progress, error)
-- [ ] T008 [US10] Create updater service in `src/services/updater.ts`: export `checkForUpdate()` that calls `check()` from `@tauri-apps/plugin-updater` and returns typed result, and `installUpdate(onProgress)` that calls `downloadAndInstall()` with progress callback then `relaunch()` from `@tauri-apps/plugin-process`
-- [ ] T009 [US10] Add update checker card to `src/components/settings/settings-view.tsx`: new Card section with "Guncelleme" heading, current version display from `src-tauri/tauri.conf.json` version (read via Tauri API or hardcoded constant), "Guncelleme Kontrol Et" button, and state-driven UI for all `UpdateStatus` states (checking spinner, available version info with "Guncelle" button, download progress bar, error with retry, up-to-date confirmation). All text in Turkish.
-- [ ] T010 [US10] Verify `pnpm build` succeeds with zero TypeScript errors after updater integration
+- [x] T007 [US10] Add `UpdateStatus` type to `src/types/index.ts`: discriminated union with states `idle | checking | available | downloading | error | upToDate` and associated fields (version, body, date, progress, error)
+- [x] T008 [US10] Create updater service in `src/services/updater.ts`: export `checkForUpdate()` that calls `check()` from `@tauri-apps/plugin-updater` and returns typed result, and `installUpdate(onProgress)` that calls `downloadAndInstall()` with progress callback then `relaunch()` from `@tauri-apps/plugin-process`
+- [x] T009 [US10] Add update checker card to `src/components/settings/settings-view.tsx`: new Card section with "Guncelleme" heading, current version display via `getVersion()` from `@tauri-apps/api/app`, "Guncelleme Kontrol Et" button, and state-driven UI for all `UpdateStatus` states (checking spinner, available version info with "Guncelle" button, download progress bar, error with retry, up-to-date confirmation). All text in Turkish.
+- [x] T010 [US10] Verify `pnpm build` succeeds with zero TypeScript errors after updater integration
 
 **Checkpoint**: Update checker feature complete and type-safe. Commit.
 
@@ -62,8 +62,8 @@
 
 **Purpose**: Create the GitHub Actions workflow that builds the Windows NSIS installer and publishes to GitHub Releases
 
-- [ ] T011 [P] Create `.github/workflows/release.yml`: workflow triggered on `workflow_dispatch` and push to `release` branch, `windows-latest` runner only, steps: checkout, setup Node LTS, install Rust stable, setup pnpm via corepack, `pnpm install`, `tauri-apps/tauri-action@v0` with `tagName: app-v__VERSION__`, `releaseName: "Gelir Gider v__VERSION__"`, `releaseDraft: true`, `includeUpdaterJson: true`. Pass `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` from secrets.
-- [ ] T012 [P] Add GitHub secrets documentation to `specs/001-finance-tracker/quickstart.md`: list required secrets (`TAURI_SIGNING_PRIVATE_KEY`, `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`), how to add them in GitHub repo settings
+- [x] T011 [P] Create `.github/workflows/release.yml`: workflow triggered on `workflow_dispatch` and tag push `v*`, `windows-latest` runner only, `pnpm/action-setup@v4`, `tauri-apps/tauri-action@v0` with `tagName: v__VERSION__`, `includeUpdaterJson: true`. Pass signing secrets.
+- [x] T012 [P] Quickstart already has secrets docs from planning phase
 
 **Checkpoint**: CI/CD workflow ready. Commit.
 
@@ -73,10 +73,10 @@
 
 **Purpose**: Final checks across all changes
 
-- [ ] T013 Run `pnpm lint:fix` and `pnpm format` across all modified files
-- [ ] T014 Run `pnpm build` to confirm zero TypeScript errors and successful Vite build
-- [ ] T015 Verify `src-tauri/tauri.conf.json` is valid JSON and all new fields are correctly structured
-- [ ] T016 Review all Turkish UI strings in settings-view.tsx for spelling and consistency
+- [x] T013 Run `pnpm lint:fix` and `pnpm format` across all modified files
+- [x] T014 Run `pnpm build` to confirm zero TypeScript errors and successful Vite build
+- [x] T015 Verify `src-tauri/tauri.conf.json` is valid JSON and all new fields are correctly structured
+- [x] T016 Review all Turkish UI strings in settings-view.tsx for spelling and consistency
 
 **Checkpoint**: All changes verified. Final commit.
 

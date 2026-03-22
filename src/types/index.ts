@@ -56,3 +56,16 @@ export type BackupTier =
   | "weekly"
   | "monthly"
   | "pre-migration";
+
+export type UpdateStatus =
+  | { status: "idle" }
+  | { status: "checking" }
+  | { status: "upToDate" }
+  | {
+      status: "available";
+      version: string;
+      body: string | null;
+      date: string | null;
+    }
+  | { status: "downloading"; version: string; progress: number }
+  | { status: "error"; error: string };
