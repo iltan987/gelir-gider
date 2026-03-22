@@ -1,8 +1,21 @@
-import { useState } from "react";
-import { FileUp, AlertTriangle, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  FileUp,
+  AlertTriangle,
+  CheckCircle,
+  Download,
+  Upload,
+  Sun,
+  Moon,
+  Monitor,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import type { Theme } from "@/types";
 import { formatDateTR, formatCurrency } from "@/lib/format";
+import { useAppStore } from "@/stores/app-store";
+import { getMetadata } from "@/services/db";
+import { backupToFile, restoreFromFile } from "@/services/backup";
 import {
   pickAndParseFile,
   insertRows,
@@ -16,7 +29,14 @@ type ImportState =
   | { step: "done"; inserted: number };
 
 export function SettingsView() {
+  const theme = useAppStore((s) => s.theme);
+  const setTheme = useAppStore((s) => s.setTheme);
   const [importState, setImportState] = useState<ImportState>({ step: "idle" });
+  const [lastBackup, setLastBackup] = useState<string | null>(null);
+
+  useEffect(() => {
+    getMetadata("last_auto_backup").then(setLastBackup);
+  }, []);
 
   async function handlePickFile() {
     const result = await pickAndParseFile();
@@ -40,17 +60,68 @@ export function SettingsView() {
     <div className="space-y-6">
       <h2 className="text-lg font-semibold">Ayarlar</h2>
 
+      {/* Theme */}
+      <Card className="space-y-3 p-4">
+        <div>
+          <h3 className="text-sm font-medium">Tema</h3>
+          <p className="text-muted-foreground text-xs">
+            Arayüz renk temasını seçin.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {(
+            [
+              { value: "system", label: "Sistem", icon: Monitor },
+              { value: "light", label: "Aydınlik", icon: Sun },
+              { value: "dark", label: "Karanlık", icon: Moon },
+            ] as const
+          ).map(({ value, label, icon: Icon }) => (
+            <Button
+              key={value}
+              variant={theme === value ? "default" : "outline"}
+              size="sm"
+              onClick={() => setTheme(value as Theme)}
+            >
+              <Icon className="mr-2 h-4 w-4" />
+              {label}
+            </Button>
+          ))}
+        </div>
+      </Card>
+
+      {/* Backup & Restore */}
       <Card className="space-y-4 p-4">
-        <h3 className="text-sm font-medium">Excel'den İçe Aktar</h3>
+        <h3 className="text-sm font-medium">Yedekleme ve Geri Yükleme</h3>
+        {lastBackup && (
+          <p className="text-muted-foreground text-xs">
+            Son otomatik yedek:{" "}
+            {formatDateTR(new Date(lastBackup), "d MMMM yyyy HH:mm")}
+          </p>
+        )}
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={backupToFile}>
+            <Download className="mr-2 h-4 w-4" />
+            Yedekle
+          </Button>
+          <Button variant="outline" size="sm" onClick={restoreFromFile}>
+            <Upload className="mr-2 h-4 w-4" />
+            Geri Yükle
+          </Button>
+        </div>
+      </Card>
+
+      {/* Import */}
+      <Card className="space-y-4 p-4">
+        <h3 className="text-sm font-medium">Excel'den Ice Aktar</h3>
         <p className="text-muted-foreground text-xs">
-          .xlsx veya .xls dosyasından işlem aktarımı yapar. Mevcut verilere ek
+          .xlsx veya .xls dosyasindan islem aktarimi yapar. Mevcut verilere ek
           olarak eklenir.
         </p>
 
         {importState.step === "idle" && (
           <Button variant="outline" onClick={handlePickFile}>
             <FileUp className="mr-2 h-4 w-4" />
-            Dosya Seç
+            Dosya Sec
           </Button>
         )}
 
@@ -59,12 +130,12 @@ export function SettingsView() {
             <div className="flex gap-4 text-sm">
               <span className="text-emerald-600">
                 <CheckCircle className="mr-1 inline h-4 w-4" />
-                {importState.result.validRows.length} geçerli satır
+                {importState.result.validRows.length} gecerli satir
               </span>
               {importState.result.errors.length > 0 && (
                 <span className="text-rose-600">
                   <AlertTriangle className="mr-1 inline h-4 w-4" />
-                  {importState.result.errors.length} hatalı satır
+                  {importState.result.errors.length} hatali satir
                 </span>
               )}
             </div>
@@ -75,7 +146,7 @@ export function SettingsView() {
                   <thead>
                     <tr className="text-muted-foreground border-b text-left">
                       <th className="pr-3 pb-1">Tarih</th>
-                      <th className="pr-3 pb-1">Tür</th>
+                      <th className="pr-3 pb-1">Tur</th>
                       <th className="pr-3 pb-1 text-right">Tutar</th>
                       <th className="pr-3 pb-1">Kategori</th>
                       <th className="pb-1">Not</th>
@@ -105,7 +176,7 @@ export function SettingsView() {
                 <table className="w-full">
                   <thead>
                     <tr className="text-muted-foreground border-b text-left">
-                      <th className="pr-3 pb-1">Satır</th>
+                      <th className="pr-3 pb-1">Satir</th>
                       <th className="pr-3 pb-1">Alan</th>
                       <th className="pb-1">Hata</th>
                     </tr>
@@ -126,16 +197,16 @@ export function SettingsView() {
             {importState.result.validRows.length > 0 ? (
               <div className="flex gap-2">
                 <Button size="sm" onClick={handleConfirmImport}>
-                  {importState.result.validRows.length} satır aktar
+                  {importState.result.validRows.length} satir aktar
                 </Button>
                 <Button size="sm" variant="outline" onClick={handleCancel}>
-                  İptal
+                  Iptal
                 </Button>
               </div>
             ) : (
               <div className="space-y-2">
                 <p className="text-muted-foreground text-xs">
-                  Aktarılabilecek geçerli satır bulunamadı.
+                  Aktarilabilecek gecerli satir bulunamadi.
                 </p>
                 <Button size="sm" variant="outline" onClick={handleCancel}>
                   Kapat
@@ -146,14 +217,14 @@ export function SettingsView() {
         )}
 
         {importState.step === "importing" && (
-          <p className="text-muted-foreground text-sm">Aktarılıyor...</p>
+          <p className="text-muted-foreground text-sm">Aktariliyor...</p>
         )}
 
         {importState.step === "done" && (
           <div className="space-y-2">
             <p className="text-sm text-emerald-600">
               <CheckCircle className="mr-1 inline h-4 w-4" />
-              {importState.inserted} işlem başarıyla aktarıldı.
+              {importState.inserted} islem basariyla aktarildi.
             </p>
             <Button size="sm" variant="outline" onClick={handleCancel}>
               Tamam

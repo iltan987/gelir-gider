@@ -18,9 +18,12 @@ export const createUiSlice: StateCreator<AppState, [], [], UiSlice> = (
 ) => ({
   activeView: "daily",
   selectedDate: format(new Date(), "yyyy-MM-dd"),
-  theme: "light",
+  theme: (localStorage.getItem("theme") as Theme) ?? "system",
   setView: (view) => set({ activeView: view }),
   setSelectedDate: (date) => set({ selectedDate: date }),
   goToToday: () => set({ selectedDate: format(new Date(), "yyyy-MM-dd") }),
-  setTheme: (theme) => set({ theme }),
+  setTheme: (theme) => {
+    localStorage.setItem("theme", theme);
+    set({ theme });
+  },
 });

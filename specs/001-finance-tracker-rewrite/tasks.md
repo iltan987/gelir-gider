@@ -169,10 +169,10 @@
 
 **Independent Test**: Create backup, modify data, restore — data matches backup. Restart app — verify auto-backup files created in correct tiers. Check retention limits enforced.
 
-- [ ] T045 [P] [US8] Create manual backup service (backup: copy DB file to user-selected path via dialog+fs plugins, restore: validate backup file schema, double-confirm dialog, replace DB, trigger app relaunch via @tauri-apps/plugin-process) per file-io contract in src/services/backup.ts
-- [ ] T046 [P] [US8] Create auto-backup service (GFS tiered creation: session auto-*, daily daily-*, weekly weekly-*, monthly monthly-*; startup tier evaluation using app_metadata timestamps; per-tier pruning to retention limits; periodic session interval timer; pre-migration backup support; silent failure handling) per database contract in src/services/auto-backup.ts
-- [ ] T047 [US8] Integrate auto-backup into db-provider startup sequence (after migration, before user interaction: run startup backups, start periodic timer) in src/providers/db-provider.tsx
-- [ ] T048 [US8] Add backup/restore UI to settings view (manual backup button, restore button with file picker, last auto-backup timestamp display from app_metadata, confirmation dialogs) in src/components/settings/settings-view.tsx
+- [x] T045 [P] [US8] Create manual backup service (backup: copy DB file to user-selected path via dialog+fs plugins, restore: validate backup file schema, double-confirm dialog, replace DB, trigger app relaunch via @tauri-apps/plugin-process) per file-io contract in src/services/backup.ts
+- [x] T046 [P] [US8] Create auto-backup service (GFS tiered creation: session auto-*, daily daily-*, weekly weekly-*, monthly monthly-*; startup tier evaluation using app_metadata timestamps; per-tier pruning to retention limits; periodic session interval timer; pre-migration backup support; silent failure handling) per database contract in src/services/auto-backup.ts
+- [x] T047 [US8] Integrate auto-backup into db-provider startup sequence (after migration, before user interaction: run startup backups, start periodic timer) in src/providers/db-provider.tsx
+- [x] T048 [US8] Add backup/restore UI to settings view (manual backup button, restore button with file picker, last auto-backup timestamp display from app_metadata, confirmation dialogs) in src/components/settings/settings-view.tsx
 
 **Checkpoint**: Full data safety — manual backup/restore operational, automatic GFS backups running at startup with tiered retention
 
@@ -184,8 +184,8 @@
 
 **Independent Test**: Switch to dark theme — UI updates immediately. Close and reopen app — dark theme still active. Switch back to light — persists.
 
-- [ ] T049 [US9] Implement theme application logic (read theme from Zustand ui-slice, apply dark/light class to document root, persist theme preference via Zustand persist middleware or app_metadata) in src/App.tsx
-- [ ] T050 [US9] Add theme toggle control to settings view (light/dark toggle switch, immediate visual feedback) in src/components/settings/settings-view.tsx
+- [x] T049 [US9] Implement theme application logic (read theme from Zustand ui-slice, apply dark/light class to document root, persist theme preference via Zustand persist middleware or app_metadata) in src/App.tsx
+- [x] T050 [US9] Add theme toggle control to settings view (light/dark toggle switch, immediate visual feedback) in src/components/settings/settings-view.tsx
 
 **Checkpoint**: Theme preference fully functional and persistent
 

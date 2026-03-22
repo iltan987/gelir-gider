@@ -2,7 +2,7 @@ export type TransactionType = "revenue" | "expense";
 
 export type View = "daily" | "analysis" | "settings";
 
-export type Theme = "light" | "dark";
+export type Theme = "light" | "dark" | "system";
 
 export interface Transaction {
   id: string;

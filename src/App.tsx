@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "./App.css";
 import { DbProvider } from "@/providers/db-provider";
 import { NavBar } from "@/components/shared/nav-bar";
@@ -19,17 +20,43 @@ function ViewRouter() {
   }
 }
 
+function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const theme = useAppStore((s) => s.theme);
+
+  useEffect(() => {
+    function apply() {
+      const isDark =
+        theme === "dark" ||
+        (theme === "system" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.classList.toggle("dark", isDark);
+    }
+
+    apply();
+
+    if (theme === "system") {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      mq.addEventListener("change", apply);
+      return () => mq.removeEventListener("change", apply);
+    }
+  }, [theme]);
+
+  return <>{children}</>;
+}
+
 function App() {
   return (
     <DbProvider>
-      <div className="app-shell flex h-screen flex-col">
-        <header className="border-b p-2">
-          <NavBar />
-        </header>
-        <main className="flex-1 overflow-auto p-4">
-          <ViewRouter />
-        </main>
-      </div>
+      <ThemeProvider>
+        <div className="app-shell flex h-screen flex-col">
+          <header className="border-b p-2">
+            <NavBar />
+          </header>
+          <main className="flex-1 overflow-auto p-4">
+            <ViewRouter />
+          </main>
+        </div>
+      </ThemeProvider>
     </DbProvider>
   );
 }

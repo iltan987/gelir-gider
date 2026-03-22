@@ -1,5 +1,10 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { getDb } from "@/services/db";
+import {
+  runStartupBackups,
+  startPeriodicBackup,
+  stopPeriodicBackup,
+} from "@/services/auto-backup";
 
 interface DbProviderProps {
   children: ReactNode;
@@ -14,8 +19,9 @@ export function DbProvider({ children }: DbProviderProps) {
 
     async function init() {
       try {
-        // Database.load() triggers migrations automatically
         await getDb();
+        await runStartupBackups();
+        startPeriodicBackup();
         if (!cancelled) setReady(true);
       } catch (err) {
         if (!cancelled) setError(String(err));
@@ -25,6 +31,7 @@ export function DbProvider({ children }: DbProviderProps) {
     init();
     return () => {
       cancelled = true;
+      stopPeriodicBackup();
     };
   }, []);
 

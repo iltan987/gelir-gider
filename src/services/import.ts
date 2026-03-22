@@ -109,10 +109,7 @@ export function parseAndValidate(data: Uint8Array): ImportResult {
     }
     // Skip summary/metadata rows (single-cell rows starting with known prefixes)
     const firstCell = String(row[0] ?? "").trim();
-    if (
-      row.length < 3 ||
-      /^(Toplam|Net|Kar|Günlük|Analiz)/i.test(firstCell)
-    ) {
+    if (row.length < 3 || /^(Toplam|Net|Kar|Günlük|Analiz)/i.test(firstCell)) {
       continue;
     }
 
