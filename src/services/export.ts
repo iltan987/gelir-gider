@@ -145,15 +145,16 @@ export async function exportDay(
 export async function exportPeriod(
   startDate: string,
   endDate: string,
-  categoryFilter: string | null,
+  categoryFilter: Set<string> | null,
 ): Promise<boolean> {
   let query =
     "SELECT id, date, type, amount, category, note, created_at FROM transactions WHERE date >= $1 AND date <= $2";
   const params: unknown[] = [startDate, endDate];
 
   if (categoryFilter) {
-    query += " AND category = $3";
-    params.push(categoryFilter);
+    const placeholders = [...categoryFilter].map((_, i) => `$${i + 3}`);
+    query += ` AND category IN (${placeholders.join(", ")})`;
+    params.push(...categoryFilter);
   }
 
   query += " ORDER BY date ASC, created_at ASC";

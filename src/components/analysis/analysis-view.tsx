@@ -30,6 +30,13 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ChevronDown } from "lucide-react";
 import { PeriodChart } from "./period-chart";
 import { PeriodMetrics } from "./period-metrics";
 import { CategoryBreakdown } from "./category-breakdown";
@@ -320,25 +327,80 @@ export function AnalysisView() {
         <div className="ml-auto flex items-end gap-2">
           <div>
             <p className="text-muted-foreground mb-1 text-xs">Kategori</p>
-            <Select
-              value={categoryFilter ?? "__all__"}
-              onValueChange={(v) => {
-                if (v === null) return;
-                setCategoryFilter(v === "__all__" ? null : v);
-              }}
-            >
-              <SelectTrigger className="w-44">
-                <TriggerLabel>{categoryFilter ?? "Tümü"}</TriggerLabel>
-              </SelectTrigger>
-              <SelectContent className="max-w-60">
-                <SelectItem value="__all__">Tümü</SelectItem>
-                {ALL_CATEGORIES.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover>
+              <PopoverTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-44 justify-between font-normal"
+                  >
+                    <span className="truncate">
+                      {categoryFilter === null
+                        ? "Tümü"
+                        : `${categoryFilter.size} kategori`}
+                    </span>
+                    <ChevronDown className="ml-2 h-3 w-3 opacity-50" />
+                  </Button>
+                }
+              />
+              <PopoverContent className="w-56 p-0" align="end">
+                <div className="flex gap-1 border-b p-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs"
+                    onClick={() => setCategoryFilter(null)}
+                  >
+                    Tümünü Seç
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs"
+                    onClick={() => setCategoryFilter(new Set())}
+                  >
+                    Temizle
+                  </Button>
+                </div>
+                <div className="max-h-56 overflow-auto p-2">
+                  {ALL_CATEGORIES.map((cat) => {
+                    const checked =
+                      categoryFilter === null || categoryFilter.has(cat);
+                    return (
+                      <label
+                        key={cat}
+                        className="hover:bg-accent flex cursor-pointer items-center gap-2 rounded px-1 py-1 text-sm"
+                      >
+                        <Checkbox
+                          checked={checked}
+                          onCheckedChange={() => {
+                            if (categoryFilter === null) {
+                              const next = new Set(ALL_CATEGORIES);
+                              next.delete(cat);
+                              setCategoryFilter(next);
+                            } else {
+                              const next = new Set(categoryFilter);
+                              if (next.has(cat)) {
+                                next.delete(cat);
+                              } else {
+                                next.add(cat);
+                              }
+                              if (next.size === ALL_CATEGORIES.length) {
+                                setCategoryFilter(null);
+                              } else {
+                                setCategoryFilter(next);
+                              }
+                            }
+                          }}
+                        />
+                        {cat}
+                      </label>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
           <div>
             <p className="text-muted-foreground mb-1 text-xs">Not</p>

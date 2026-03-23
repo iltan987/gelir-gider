@@ -19,7 +19,9 @@ function currentMonthRange(): DateRange {
 
 export function useAnalysis() {
   const [dateRange, setDateRange] = useState<DateRange>(currentMonthRange);
-  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<Set<string> | null>(
+    null,
+  );
   const [noteFilter, setNoteFilter] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +47,7 @@ export function useAnalysis() {
   const filteredTransactions = useMemo(() => {
     let result = transactions;
     if (categoryFilter) {
-      result = result.filter((t) => t.category === categoryFilter);
+      result = result.filter((t) => categoryFilter.has(t.category));
     }
     if (noteFilter) {
       const lower = noteFilter.toLowerCase();
@@ -70,7 +72,7 @@ export function useAnalysis() {
     setDateRange(range);
   }, []);
 
-  const updateCategoryFilter = useCallback((filter: string | null) => {
+  const updateCategoryFilter = useCallback((filter: Set<string> | null) => {
     setCategoryFilter(filter);
   }, []);
 
