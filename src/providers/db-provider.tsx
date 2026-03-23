@@ -1,10 +1,12 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { getDb } from "@/services/db";
+import { getDb, getMetadata } from "@/services/db";
 import {
   runStartupBackups,
   startPeriodicBackup,
   stopPeriodicBackup,
 } from "@/services/auto-backup";
+import { useAppStore } from "@/stores/app-store";
+import type { Theme } from "@/types";
 
 interface DbProviderProps {
   children: ReactNode;
@@ -20,6 +22,10 @@ export function DbProvider({ children }: DbProviderProps) {
     async function init() {
       try {
         await getDb();
+        const savedTheme = await getMetadata("theme");
+        if (savedTheme && ["light", "dark", "system"].includes(savedTheme)) {
+          useAppStore.getState().setTheme(savedTheme as Theme);
+        }
         await runStartupBackups();
         startPeriodicBackup();
         if (!cancelled) setReady(true);

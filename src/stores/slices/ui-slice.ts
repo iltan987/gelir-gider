@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import type { StateCreator } from "zustand";
 import type { View, Theme } from "@/types";
 import type { AppState } from "../app-store";
+import { setMetadata } from "@/services/db";
 
 export interface UiSlice {
   activeView: View;
@@ -24,6 +25,7 @@ export const createUiSlice: StateCreator<AppState, [], [], UiSlice> = (
   goToToday: () => set({ selectedDate: format(new Date(), "yyyy-MM-dd") }),
   setTheme: (theme) => {
     localStorage.setItem("theme", theme);
+    setMetadata("theme", theme);
     set({ theme });
   },
 });
