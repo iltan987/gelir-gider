@@ -40,6 +40,11 @@ echo "Updated tauri.conf.json -> $VERSION"
 sed -i "/^\[package\]/,/^\[/{s/^version = \"[^\"]*\"/version = \"$VERSION\"/}" "$ROOT/src-tauri/Cargo.toml"
 echo "Updated Cargo.toml -> $VERSION"
 
+# Stage, commit, and tag
+git add "$ROOT/package.json" "$ROOT/src-tauri/tauri.conf.json" "$ROOT/src-tauri/Cargo.toml" "$ROOT/src-tauri/Cargo.lock"
+git commit -m "chore: bump version to $VERSION"
+git tag "v$VERSION"
+
 echo ""
-echo "Version bumped to $VERSION"
-echo "Next: git add -A && git commit -m \"chore: bump version to $VERSION\" && git tag v$VERSION"
+echo "Version bumped to $VERSION, committed and tagged v$VERSION"
+echo "Next: git push && git push --tags"
