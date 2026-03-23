@@ -36,8 +36,9 @@ node -e "
 "
 echo "Updated tauri.conf.json -> $VERSION"
 
-# Bump Cargo.toml ([package] section version only)
+# Bump Cargo.toml ([package] section version only) and update Cargo.lock
 sed -i "/^\[package\]/,/^\[/{s/^version = \"[^\"]*\"/version = \"$VERSION\"/}" "$ROOT/src-tauri/Cargo.toml"
+(cd "$ROOT/src-tauri" && cargo generate-lockfile --quiet 2>/dev/null || true)
 echo "Updated Cargo.toml -> $VERSION"
 
 # Stage, commit, and tag
