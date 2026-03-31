@@ -8,7 +8,7 @@ import {
   BaseDirectory,
 } from "@tauri-apps/plugin-fs";
 import { appConfigDir, appDataDir } from "@tauri-apps/api/path";
-import { getMetadata, setMetadata } from "@/services/db";
+import { execute, getMetadata, setMetadata } from "@/services/db";
 import { getISOWeek, getISOWeekYear } from "date-fns";
 
 const BACKUP_DIR = "auto-backups";
@@ -38,6 +38,12 @@ async function ensureBackupDir(): Promise<void> {
 
 async function createBackup(filename: string): Promise<void> {
   await ensureBackupDir();
+  // Flush any pending writes before copying the raw file
+  try {
+    await execute("PRAGMA wal_checkpoint(TRUNCATE)");
+  } catch {
+    // Safe to ignore - checkpoint is a best-effort optimization
+  }
   const configDir = await appConfigDir();
   const dbPath = `${configDir}/gelir-gider.db`;
   const data = await readFile(dbPath);
@@ -135,13 +141,26 @@ export function stopPeriodicBackup(): void {
   }
 }
 
-export async function createPreMigrationBackup(
-  migrationVersion: string,
-): Promise<void> {
+/**
+ * Creates a raw file backup before Database.load() triggers migrations.
+ * Does NOT use the DB connection (it isn't open yet).
+ */
+export async function createPreMigrationBackup(): Promise<void> {
   try {
+    const configDir = await appConfigDir();
+    const dbPath = `${configDir}/gelir-gider.db`;
+    const dbExists = await exists(dbPath);
+    if (!dbExists) return; // first run, no DB to back up
+
     await ensureBackupDir();
-    await createBackup(`pre-migration-${migrationVersion}-${timestamp()}.db`);
+    const data = await readFile(dbPath);
+    const dataDir = await appDataDir();
+    await writeFile(
+      `${dataDir}/${BACKUP_DIR}/pre-migration-${timestamp()}.db`,
+      data,
+    );
   } catch (err) {
+    // Pre-migration backup failure must not block startup
     console.error("Pre-migration backup failed:", err);
   }
 }

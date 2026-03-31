@@ -4,8 +4,9 @@ import {
   ask,
   message,
 } from "@tauri-apps/plugin-dialog";
-import { readFile, writeFile } from "@tauri-apps/plugin-fs";
+import { readFile, writeFile, copyFile, remove } from "@tauri-apps/plugin-fs";
 import { appConfigDir } from "@tauri-apps/api/path";
+import Database from "@tauri-apps/plugin-sql";
 import { closeDb } from "@/services/db";
 
 async function getDbPath(): Promise<string> {
@@ -58,18 +59,48 @@ export async function restoreFromFile(): Promise<boolean> {
 
   try {
     const dbPath = await getDbPath();
+    const backupPath = `${dbPath}.pre-restore`;
     const data = await readFile(filePath);
-    await writeFile(dbPath, data);
+
+    // Validate the file is a valid SQLite DB with expected schema
+    const tempPath = `${dbPath}.validate`;
+    await writeFile(tempPath, data);
+    try {
+      const testDb = await Database.load(`sqlite:${tempPath}`);
+      await testDb.select("SELECT id, date, type, amount, category FROM transactions LIMIT 1");
+      await testDb.close();
+    } catch {
+      await remove(tempPath);
+      await message(
+        "Secilen dosya gecerli bir yedek degil veya bozuk.",
+        { title: "Hata", kind: "error" },
+      );
+      return false;
+    }
+    await remove(tempPath);
+
+    // Close current DB, backup current file, then overwrite
     await closeDb();
-    await message("Geri yükleme tamamlandı. Sayfa yeniden yüklenecek.", {
-      title: "Başarılı",
+    await copyFile(dbPath, backupPath);
+    try {
+      await writeFile(dbPath, data);
+    } catch (writeErr) {
+      // Restore the original if write fails
+      await copyFile(backupPath, dbPath);
+      await remove(backupPath);
+      throw writeErr;
+    }
+    await remove(backupPath);
+
+    await message("Geri yukleme tamamlandi. Sayfa yeniden yuklenecek.", {
+      title: "Basarili",
       kind: "info",
     });
     window.location.reload();
     return true;
   } catch (err) {
     console.error("Restore failed:", err);
-    await message(`Geri yükleme başarısız: ${err}`, {
+    await message(`Geri yukleme basarisiz: ${err}`, {
       title: "Hata",
       kind: "error",
     });

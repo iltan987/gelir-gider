@@ -191,20 +191,27 @@ export async function pickAndParseFile(): Promise<ImportResult | null> {
 }
 
 export async function insertRows(rows: ParsedRow[]): Promise<number> {
-  let inserted = 0;
-  for (const row of rows) {
-    await execute(
-      "INSERT INTO transactions (id, date, type, amount, category, note) VALUES ($1, $2, $3, $4, $5, $6)",
-      [
-        crypto.randomUUID(),
-        row.date,
-        row.type,
-        row.amount,
-        row.category,
-        row.note,
-      ],
-    );
-    inserted++;
+  await execute("BEGIN TRANSACTION");
+  try {
+    let inserted = 0;
+    for (const row of rows) {
+      await execute(
+        "INSERT INTO transactions (id, date, type, amount, category, note) VALUES ($1, $2, $3, $4, $5, $6)",
+        [
+          crypto.randomUUID(),
+          row.date,
+          row.type,
+          row.amount,
+          row.category,
+          row.note,
+        ],
+      );
+      inserted++;
+    }
+    await execute("COMMIT");
+    return inserted;
+  } catch (err) {
+    await execute("ROLLBACK");
+    throw err;
   }
-  return inserted;
 }

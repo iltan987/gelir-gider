@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useAppStore } from "@/stores/app-store";
-import { isRefundCategory } from "@/lib/categories";
 import type { TransactionType } from "@/types";
 
 export function useTransactions() {
@@ -24,14 +23,10 @@ export function useTransactions() {
     category: string;
     note: string | null;
   }) {
-    let amount = data.amount;
-    if (isRefundCategory(data.category)) {
-      amount = -Math.abs(amount);
-    }
     await addTransaction({
       date: selectedDate,
       type: data.type,
-      amount,
+      amount: data.amount,
       category: data.category,
       note: data.note,
     });
@@ -46,14 +41,10 @@ export function useTransactions() {
       note: string | null;
     },
   ) {
-    let amount = data.amount;
-    if (isRefundCategory(data.category)) {
-      amount = -Math.abs(amount);
-    }
     await updateTransaction(id, {
       date: selectedDate,
       type: data.type,
-      amount,
+      amount: data.amount,
       category: data.category,
       note: data.note,
     });

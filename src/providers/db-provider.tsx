@@ -1,6 +1,7 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { getDb, getMetadata } from "@/services/db";
 import {
+  createPreMigrationBackup,
   runStartupBackups,
   startPeriodicBackup,
   stopPeriodicBackup,
@@ -21,6 +22,8 @@ export function DbProvider({ children }: DbProviderProps) {
 
     async function init() {
       try {
+        // Back up before DB.load() triggers automatic migrations
+        await createPreMigrationBackup();
         await getDb();
         const savedTheme = await getMetadata("theme");
         if (savedTheme && ["light", "dark", "system"].includes(savedTheme)) {

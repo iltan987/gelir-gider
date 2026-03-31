@@ -25,17 +25,31 @@ import {
   insertRows,
   type ImportResult,
 } from "@/services/import";
+import {
+  pickAndPreviewOldDb,
+  insertMigratedRows,
+  type MigratePreview,
+} from "@/services/migrate-old";
 
 type ImportState =
   | { step: "idle" }
   | { step: "preview"; result: ImportResult }
   | { step: "importing" }
-  | { step: "done"; inserted: number };
+  | { step: "done"; inserted: number }
+  | { step: "error"; error: string };
 
 export function SettingsView() {
   const theme = useAppStore((s) => s.theme);
   const setTheme = useAppStore((s) => s.setTheme);
   const [importState, setImportState] = useState<ImportState>({ step: "idle" });
+  const [migrateState, setMigrateState] = useState<
+    | { step: "idle" }
+    | { step: "loading" }
+    | { step: "preview"; preview: MigratePreview }
+    | { step: "importing" }
+    | { step: "done"; total: number }
+    | { step: "error"; error: string }
+  >({ step: "idle" });
   const [lastBackup, setLastBackup] = useState<string | null>(null);
   const [updateState, setUpdateState] = useState<UpdateStatus>({
     status: "idle",
@@ -80,8 +94,12 @@ export function SettingsView() {
     if (importState.step !== "preview") return;
     const { result } = importState;
     setImportState({ step: "importing" });
-    const inserted = await insertRows(result.validRows);
-    setImportState({ step: "done", inserted });
+    try {
+      const inserted = await insertRows(result.validRows);
+      setImportState({ step: "done", inserted });
+    } catch (err) {
+      setImportState({ step: "error", error: String(err) });
+    }
   }
 
   function handleCancel() {
@@ -238,6 +256,170 @@ export function SettingsView() {
         )}
       </Card>
 
+      {/* Migrate from old app */}
+      <Card className="space-y-3 p-4">
+        <div>
+          <h3 className="text-sm font-medium">Eski Uygulamadan Aktar</h3>
+          <p className="text-muted-foreground text-xs">
+            Eski veritabanı dosyasındaki (.db) gelir ve giderleri bu uygulamaya
+            aktar.
+          </p>
+        </div>
+
+        {migrateState.step === "idle" && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              setMigrateState({ step: "loading" });
+              try {
+                const preview = await pickAndPreviewOldDb();
+                if (!preview) {
+                  setMigrateState({ step: "idle" });
+                  return;
+                }
+                setMigrateState({ step: "preview", preview });
+              } catch (err) {
+                setMigrateState({ step: "error", error: String(err) });
+              }
+            }}
+          >
+            <FileUp className="mr-2 h-4 w-4" />
+            Eski DB Dosyası Seç
+          </Button>
+        )}
+
+        {migrateState.step === "loading" && (
+          <div className="flex items-center gap-2 text-sm">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span className="text-muted-foreground">Okunuyor...</span>
+          </div>
+        )}
+
+        {migrateState.step === "preview" && (
+          <div className="space-y-3">
+            <div className="flex gap-4 text-sm">
+              <span className="text-emerald-600">
+                {migrateState.preview.revenueCount} gelir
+              </span>
+              <span className="text-rose-600">
+                {migrateState.preview.expenseCount} gider
+              </span>
+              <span className="text-muted-foreground">
+                = {migrateState.preview.rows.length} toplam
+              </span>
+            </div>
+
+            <div className="max-h-56 overflow-auto rounded border p-2 text-xs">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-muted-foreground border-b text-left">
+                    <th className="pr-3 pb-1">Tarih</th>
+                    <th className="pr-3 pb-1">Tür</th>
+                    <th className="pr-3 pb-1 text-right">Tutar</th>
+                    <th className="pr-3 pb-1">Kategori</th>
+                    <th className="pb-1">Not</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {migrateState.preview.rows.map((row, i) => (
+                    <tr key={i} className="border-b last:border-0">
+                      <td className="py-1 pr-3">{formatDateTR(row.date)}</td>
+                      <td className="py-1 pr-3">
+                        {row.type === "revenue" ? "Gelir" : "Gider"}
+                      </td>
+                      <td className="py-1 pr-3 text-right">
+                        {formatCurrency(row.amount)}
+                      </td>
+                      <td className="py-1 pr-3">{row.category}</td>
+                      <td className="py-1">{row.note ?? ""}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {migrateState.preview.unknownCategories.length > 0 && (
+              <div className="rounded border border-amber-300 bg-amber-50 p-2 text-xs dark:border-amber-700 dark:bg-amber-950">
+                <p className="mb-1 font-medium text-amber-800 dark:text-amber-300">
+                  <AlertTriangle className="mr-1 inline h-3 w-3" />
+                  Bilinmeyen kategoriler:
+                </p>
+                <ul className="list-inside list-disc text-amber-700 dark:text-amber-400">
+                  {migrateState.preview.unknownCategories.map((c) => (
+                    <li key={c}>{c}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={async () => {
+                  const { preview } = migrateState;
+                  setMigrateState({ step: "importing" });
+                  try {
+                    const total = await insertMigratedRows(preview.rows);
+                    setMigrateState({ step: "done", total });
+                  } catch (err) {
+                    setMigrateState({ step: "error", error: String(err) });
+                  }
+                }}
+              >
+                {migrateState.preview.rows.length} işlem aktar
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setMigrateState({ step: "idle" })}
+              >
+                İptal
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {migrateState.step === "importing" && (
+          <div className="flex items-center gap-2 text-sm">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span className="text-muted-foreground">Aktariliyor...</span>
+          </div>
+        )}
+
+        {migrateState.step === "done" && (
+          <div className="space-y-2">
+            <p className="text-sm text-emerald-600">
+              <CheckCircle className="mr-1 inline h-4 w-4" />
+              {migrateState.total} işlem başarıyla aktarıldı.
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setMigrateState({ step: "idle" })}
+            >
+              Tamam
+            </Button>
+          </div>
+        )}
+
+        {migrateState.step === "error" && (
+          <div className="space-y-2">
+            <p className="text-sm text-rose-600">
+              <AlertTriangle className="mr-1 inline h-4 w-4" />
+              Aktarım başarısız: {migrateState.error}
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setMigrateState({ step: "idle" })}
+            >
+              Kapat
+            </Button>
+          </div>
+        )}
+      </Card>
+
       {/* Import */}
       <Card className="space-y-4 p-4">
         <h3 className="text-sm font-medium">Excel'den İçe Aktar</h3>
@@ -356,6 +538,18 @@ export function SettingsView() {
             </p>
             <Button size="sm" variant="outline" onClick={handleCancel}>
               Tamam
+            </Button>
+          </div>
+        )}
+
+        {importState.step === "error" && (
+          <div className="space-y-2">
+            <p className="text-sm text-rose-600">
+              <AlertTriangle className="mr-1 inline h-4 w-4" />
+              Aktarim basarisiz: {importState.error}
+            </p>
+            <Button size="sm" variant="outline" onClick={handleCancel}>
+              Kapat
             </Button>
           </div>
         )}

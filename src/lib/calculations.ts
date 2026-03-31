@@ -102,30 +102,28 @@ export function calculateCategoryBreakdown(transactions: Transaction[]): {
 } {
   const revMap = new Map<string, number>();
   const expMap = new Map<string, number>();
-  let revTotal = 0;
-  let expTotal = 0;
 
   for (const t of transactions) {
     if (t.type === "revenue") {
       revMap.set(t.category, (revMap.get(t.category) ?? 0) + t.amount);
-      revTotal += t.amount;
     } else {
       expMap.set(t.category, (expMap.get(t.category) ?? 0) + t.amount);
-      expTotal += t.amount;
     }
   }
 
-  const toArray = (map: Map<string, number>, total: number) =>
-    [...map.entries()]
+  const toArray = (map: Map<string, number>) => {
+    const absTotal = [...map.values()].reduce((s, v) => s + Math.abs(v), 0);
+    return [...map.entries()]
       .map(([category, amount]) => ({
         category,
         total: amount,
-        percentage: total > 0 ? (Math.abs(amount) / total) * 100 : 0,
+        percentage: absTotal > 0 ? (Math.abs(amount) / absTotal) * 100 : 0,
       }))
       .sort((a, b) => Math.abs(b.total) - Math.abs(a.total));
+  };
 
   return {
-    revenue: toArray(revMap, revTotal),
-    expense: toArray(expMap, expTotal),
+    revenue: toArray(revMap),
+    expense: toArray(expMap),
   };
 }
