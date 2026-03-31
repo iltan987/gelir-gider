@@ -67,14 +67,16 @@ export async function restoreFromFile(): Promise<boolean> {
     await writeFile(tempPath, data);
     try {
       const testDb = await Database.load(`sqlite:${tempPath}`);
-      await testDb.select("SELECT id, date, type, amount, category FROM transactions LIMIT 1");
+      await testDb.select(
+        "SELECT id, date, type, amount, category FROM transactions LIMIT 1",
+      );
       await testDb.close();
     } catch {
       await remove(tempPath);
-      await message(
-        "Secilen dosya gecerli bir yedek degil veya bozuk.",
-        { title: "Hata", kind: "error" },
-      );
+      await message("Secilen dosya gecerli bir yedek degil veya bozuk.", {
+        title: "Hata",
+        kind: "error",
+      });
       return false;
     }
     await remove(tempPath);

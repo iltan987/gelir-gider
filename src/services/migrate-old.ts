@@ -98,7 +98,9 @@ export async function pickAndPreviewOldDb(): Promise<MigratePreview | null> {
             const valid = r.type === "revenue" ? revSet : expSet;
             return !valid.has(r.category);
           })
-          .map((r) => `${r.type === "revenue" ? "Gelir" : "Gider"}: ${r.category}`),
+          .map(
+            (r) => `${r.type === "revenue" ? "Gelir" : "Gider"}: ${r.category}`,
+          ),
       ),
     ];
 

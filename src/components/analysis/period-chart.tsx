@@ -79,10 +79,7 @@ export function PeriodChart({ analysis }: PeriodChartProps) {
     const printWidth = 680;
     const scale = Math.min(1, printWidth / el.offsetWidth);
     el.style.setProperty("--print-scale", String(scale));
-    el.style.setProperty(
-      "--print-height",
-      `${Math.round(350 * scale)}px`,
-    );
+    el.style.setProperty("--print-height", `${Math.round(350 * scale)}px`);
   });
 
   return (
