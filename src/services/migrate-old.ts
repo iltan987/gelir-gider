@@ -61,8 +61,6 @@ export async function pickAndPreviewOldDb(): Promise<MigratePreview | null> {
       "SELECT * FROM expenses ORDER BY date",
     );
 
-    await oldDb.close();
-
     const rows: MigrateRow[] = [];
 
     for (const r of revenues) {
