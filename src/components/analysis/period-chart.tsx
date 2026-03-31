@@ -55,6 +55,18 @@ function CustomTooltip({
 }
 
 export function PeriodChart({ analysis }: PeriodChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    // A4 portrait with 15mm margins = 180mm printable width ~ 680px at 96dpi
+    const printWidth = 680;
+    const scale = Math.min(1, printWidth / el.offsetWidth);
+    el.style.setProperty("--print-scale", String(scale));
+    el.style.setProperty("--print-height", `${Math.round(350 * scale)}px`);
+  });
+
   if (analysis.dailyBreakdown.length === 0) {
     return (
       <p className="text-muted-foreground py-8 text-center text-sm">
@@ -69,18 +81,6 @@ export function PeriodChart({ analysis }: PeriodChartProps) {
     Gider: d.expense,
     Net: d.net,
   }));
-
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    // A4 portrait with 15mm margins = 180mm printable width ~ 680px at 96dpi
-    const printWidth = 680;
-    const scale = Math.min(1, printWidth / el.offsetWidth);
-    el.style.setProperty("--print-scale", String(scale));
-    el.style.setProperty("--print-height", `${Math.round(350 * scale)}px`);
-  });
 
   return (
     <div
