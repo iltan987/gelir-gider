@@ -220,6 +220,17 @@
     gap: 12pt;
   }
 
+  /* Charts - scale to fit printed page */
+  .print-chart-container {
+    height: var(--print-height, 245px) !important;
+    overflow: hidden;
+  }
+
+  .print-chart-container .recharts-responsive-container {
+    transform: scale(var(--print-scale, 0.7));
+    transform-origin: top left;
+  }
+
   /* Cards */
   [data-slot="card"] {
     border: 1px solid #ccc;

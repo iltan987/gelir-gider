@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import {
   ComposedChart,
   Bar,
@@ -69,8 +70,27 @@ export function PeriodChart({ analysis }: PeriodChartProps) {
     Net: d.net,
   }));
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    // A4 portrait with 15mm margins = 180mm printable width ~ 680px at 96dpi
+    const printWidth = 680;
+    const scale = Math.min(1, printWidth / el.offsetWidth);
+    el.style.setProperty("--print-scale", String(scale));
+    el.style.setProperty(
+      "--print-height",
+      `${Math.round(350 * scale)}px`,
+    );
+  });
+
   return (
-    <div style={{ width: "100%", height: 350 }}>
+    <div
+      ref={containerRef}
+      className="print-chart-container"
+      style={{ width: "100%", height: 350 }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={data}
