@@ -2,6 +2,12 @@
   "name": "gelir-gider",
   "private": true,
   "version": "0.5.7",
+  "description": "Single-user financial tracker desktop app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iltan987/gelir-gider.git"
+  },
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

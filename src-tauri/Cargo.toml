@@ -1,8 +1,8 @@
 [package]
 name = "gelir-gider"
 version = "0.5.7"
-description = "A Tauri App"
-authors = ["you"]
+description = "Single-user financial tracker desktop app"
+authors = ["Iltan Caner"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
