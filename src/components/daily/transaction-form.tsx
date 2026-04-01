@@ -57,14 +57,8 @@ export function TransactionForm({
   onSave,
   onCancel,
 }: TransactionFormProps) {
-  const {
-    register,
-    handleSubmit,
-    control,
-    setError,
-    reset,
-    formState: { errors },
-  } = useForm<TransactionFormData>({
+  const { handleSubmit, control, setError, reset } =
+    useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       amount: editingTransaction ? formatInitialAmount(editingTransaction) : "",
@@ -100,8 +94,6 @@ export function TransactionForm({
 
   const typeLabel = type === "revenue" ? "Gelir" : "Gider";
 
-  const amountRegister = register("amount");
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -112,53 +104,65 @@ export function TransactionForm({
       </p>
 
       <FieldGroup>
-        <div className="grid grid-cols-[1fr_1fr_2fr] gap-3">
-          <Field>
-            <FieldLabel htmlFor="amount">Tutar</FieldLabel>
-            <Controller
-              name="amount"
-              control={control}
-              render={({ field }) => (
+        <div className="grid grid-cols-[2fr_1fr_1fr] gap-3">
+          <Controller
+            name="note"
+            control={control}
+            render={({ field }) => (
+              <Field>
+                <FieldLabel htmlFor="note">Not (isteğe bağlı)</FieldLabel>
+                <Input
+                  {...field}
+                  id="note"
+                  placeholder="Açıklama"
+                  autoFocus
+                />
+              </Field>
+            )}
+          />
+
+          <Controller
+            name="amount"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="amount">Tutar</FieldLabel>
                 <Input
                   id="amount"
                   placeholder="15.000,00"
-                  autoFocus
                   inputMode="decimal"
+                  aria-invalid={fieldState.invalid}
                   value={field.value}
                   onChange={(e) =>
                     field.onChange(formatAmountInput(e.target.value))
                   }
                   onBlur={field.onBlur}
-                  ref={(el) => {
-                    field.ref(el);
-                    amountRegister.ref(el);
-                  }}
+                  ref={field.ref}
                 />
-              )}
-            />
-            <FieldError errors={[errors.amount]} />
-          </Field>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
 
-          <Field>
-            <FieldLabel>Kategori</FieldLabel>
-            <Controller
-              name="category"
-              control={control}
-              render={({ field }) => (
+          <Controller
+            name="category"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>Kategori</FieldLabel>
                 <CategorySelect
                   type={type}
                   value={field.value}
                   onValueChange={field.onChange}
                 />
-              )}
-            />
-            <FieldError errors={[errors.category]} />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="note">Not (isteğe bağlı)</FieldLabel>
-            <Input id="note" placeholder="Açıklama" {...register("note")} />
-          </Field>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
         </div>
       </FieldGroup>
 
