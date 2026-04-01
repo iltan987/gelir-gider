@@ -54,7 +54,7 @@ export function SettingsView() {
       const result = await checkForUpdate();
       setUpdateState(result);
     } catch {
-      setUpdateState({ status: "error", error: "Sunucuya ulasilamadi" });
+      setUpdateState({ status: "error", error: "Sunucuya ulaşılamadı" });
     }
   }
 
@@ -67,7 +67,7 @@ export function SettingsView() {
         setUpdateState({ status: "downloading", version, progress });
       });
     } catch {
-      setUpdateState({ status: "error", error: "Guncelleme yuklenemedi" });
+      setUpdateState({ status: "error", error: "Güncelleme yüklenemedi" });
     }
   }
 
@@ -247,7 +247,7 @@ export function SettingsView() {
       <Card className="space-y-4 p-4">
         <h3 className="text-sm font-medium">Excel'den İçe Aktar</h3>
         <p className="text-muted-foreground text-xs">
-          .xlsx veya .xls dosyasindan islem aktarimi yapar. Mevcut verilere ek
+          .xlsx veya .xls dosyasından işlem aktarımı yapar. Mevcut verilere ek
           olarak eklenir.
         </p>
 
@@ -369,7 +369,7 @@ export function SettingsView() {
           <div className="space-y-2">
             <p className="text-sm text-rose-600">
               <AlertTriangle className="mr-1 inline h-4 w-4" />
-              Aktarim basarisiz: {importState.error}
+              Aktarım başarısız: {importState.error}
             </p>
             <Button size="sm" variant="outline" onClick={handleCancel}>
               Kapat

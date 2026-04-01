@@ -73,7 +73,7 @@ export async function restoreFromFile(): Promise<boolean> {
       await testDb.close();
     } catch {
       await remove(tempPath);
-      await message("Secilen dosya gecerli bir yedek degil veya bozuk.", {
+      await message("Seçilen dosya geçerli bir yedek değil veya bozuk.", {
         title: "Hata",
         kind: "error",
       });
@@ -94,15 +94,15 @@ export async function restoreFromFile(): Promise<boolean> {
     }
     await remove(backupPath);
 
-    await message("Geri yukleme tamamlandi. Sayfa yeniden yuklenecek.", {
-      title: "Basarili",
+    await message("Geri yükleme tamamlandı. Sayfa yeniden yüklenecek.", {
+      title: "Başarılı",
       kind: "info",
     });
     window.location.reload();
     return true;
   } catch (err) {
     console.error("Restore failed:", err);
-    await message(`Geri yukleme basarisiz: ${err}`, {
+    await message(`Geri yükleme başarısız: ${err}`, {
       title: "Hata",
       kind: "error",
     });
