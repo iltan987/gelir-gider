@@ -63,6 +63,7 @@ function TransactionColumn({
         <table className={`grid-table w-full text-sm ${borderColor}`}>
           <thead>
             <tr>
+              <th className="w-8 p-2 text-center font-medium">#</th>
               <th className="p-2 text-left font-medium">Tutar</th>
               <th className="p-2 text-left font-medium">Kategori</th>
               <th className="p-2 text-left font-medium">Not</th>
@@ -70,8 +71,11 @@ function TransactionColumn({
             </tr>
           </thead>
           <tbody>
-            {items.map((t) => (
+            {items.map((t, index) => (
               <tr key={t.id}>
+                <td className="text-muted-foreground w-8 p-2 text-center">
+                  {index + 1}
+                </td>
                 <td className="p-2 whitespace-nowrap">
                   {formatCurrency(Math.abs(t.amount))}
                 </td>

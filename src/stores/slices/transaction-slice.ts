@@ -45,7 +45,7 @@ export const createTransactionSlice: StateCreator<
   loadTransactionsByDate: async (date) => {
     set({ isLoading: true });
     const rows = await select<Transaction[]>(
-      "SELECT id, date, type, amount, category, note, created_at FROM transactions WHERE date = $1 ORDER BY created_at ASC",
+      "SELECT id, date, type, amount, category, note, created_at FROM transactions WHERE date = $1 ORDER BY created_at DESC",
       [date],
     );
     set({ transactions: rows, isLoading: false });

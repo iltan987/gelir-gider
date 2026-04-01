@@ -68,7 +68,9 @@ export function TransactionForm({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       amount: editingTransaction ? formatInitialAmount(editingTransaction) : "",
-      category: editingTransaction?.category ?? "DİĞER",
+      category:
+        editingTransaction?.category ??
+        (type === "revenue" ? "EFT-HAVALE" : "DİĞER"),
       note: editingTransaction?.note ?? "",
     },
   });
