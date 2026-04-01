@@ -129,6 +129,7 @@ export function TransactionForm({
                 <FieldLabel htmlFor="amount">Tutar</FieldLabel>
                 <Input
                   id="amount"
+                  className="placeholder:text-muted-foreground/50"
                   placeholder="15.000,00"
                   inputMode="decimal"
                   aria-invalid={fieldState.invalid}
