@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - main
+    paths:
+      - pnpm-lock.yaml
+      - src-tauri/Cargo.lock
+      - src-tauri/Cargo.toml
   workflow_dispatch:
 
 jobs:
@@ -21,18 +27,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
-
-      - name: Get pnpm store path
-        id: pnpm-store
-        shell: bash
-        run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v5
-        with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: pnpm-${{ runner.os }}-
+          cache: 'pnpm'
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -41,13 +36,16 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: "./src-tauri -> target"
-          shared-key: release
-          cache-on-failure: true
 
       - name: Install frontend dependencies
         run: pnpm install
 
+      - name: Warm Rust cache
+        if: github.ref == 'refs/heads/main'
+        run: cargo check --manifest-path src-tauri/Cargo.toml
+
       - uses: tauri-apps/tauri-action@v0
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
