@@ -1,6 +1,6 @@
 [package]
 name = "gelir-gider"
-version = "0.6.4"
+version = "0.6.5"
 description = "Single-user financial tracker desktop app"
 authors = ["Iltan Caner"]
 edition = "2021"
