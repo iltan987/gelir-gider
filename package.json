@@ -1,7 +1,7 @@
 {
   "name": "gelir-gider",
   "private": true,
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Single-user financial tracker desktop app",
   "repository": {
     "type": "git",
