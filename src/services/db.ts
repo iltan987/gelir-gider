@@ -48,3 +48,10 @@ export async function setMetadata(key: string, value: string): Promise<void> {
     [key, value],
   );
 }
+
+export async function getDistinctNotes(): Promise<string[]> {
+  const rows = await select<Array<{ note: string }>>(
+    "SELECT DISTINCT note FROM transactions WHERE note IS NOT NULL AND note != '' ORDER BY note COLLATE NOCASE",
+  );
+  return rows.map((r) => r.note);
+}

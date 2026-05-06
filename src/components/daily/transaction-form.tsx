@@ -3,6 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NoteAutocomplete } from "@/components/shared/note-autocomplete";
 import {
   Field,
   FieldError,
@@ -59,15 +60,17 @@ export function TransactionForm({
 }: TransactionFormProps) {
   const { handleSubmit, control, setError, reset } =
     useForm<TransactionFormData>({
-    resolver: zodResolver(transactionSchema),
-    defaultValues: {
-      amount: editingTransaction ? formatInitialAmount(editingTransaction) : "",
-      category:
-        editingTransaction?.category ??
-        (type === "revenue" ? "EFT-HAVALE" : "DİĞER"),
-      note: editingTransaction?.note ?? "",
-    },
-  });
+      resolver: zodResolver(transactionSchema),
+      defaultValues: {
+        amount: editingTransaction
+          ? formatInitialAmount(editingTransaction)
+          : "",
+        category:
+          editingTransaction?.category ??
+          (type === "revenue" ? "EFT-HAVALE" : "DİĞER"),
+        note: editingTransaction?.note ?? "",
+      },
+    });
 
   async function onSubmit(data: TransactionFormData) {
     const categories = getCategoriesForType(type);
@@ -97,6 +100,7 @@ export function TransactionForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      autoComplete="off"
       className="space-y-3 rounded-lg border p-4"
     >
       <p className="text-sm font-medium">
@@ -111,8 +115,11 @@ export function TransactionForm({
             render={({ field }) => (
               <Field>
                 <FieldLabel htmlFor="note">Not (isteğe bağlı)</FieldLabel>
-                <Input
-                  {...field}
+                <NoteAutocomplete
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  ref={field.ref}
                   id="note"
                   placeholder="Açıklama"
                   autoFocus
@@ -132,6 +139,7 @@ export function TransactionForm({
                   className="placeholder:text-muted-foreground/50"
                   placeholder="15.000,00"
                   inputMode="decimal"
+                  autoComplete="off"
                   aria-invalid={fieldState.invalid}
                   value={field.value}
                   onChange={(e) =>

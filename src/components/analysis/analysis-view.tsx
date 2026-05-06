@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { DateInput } from "@/components/shared/date-input";
+import { NoteAutocomplete } from "@/components/shared/note-autocomplete";
 import {
   Select,
   SelectContent,
@@ -404,11 +405,10 @@ export function AnalysisView() {
           </div>
           <div>
             <p className="text-muted-foreground mb-1 text-xs">Not</p>
-            <Input
-              type="text"
-              placeholder="Not ara..."
+            <NoteAutocomplete
               value={noteFilter}
-              onChange={(e) => setNoteFilter(e.target.value)}
+              onChange={setNoteFilter}
+              placeholder="Not ara..."
               className="w-40"
             />
           </div>

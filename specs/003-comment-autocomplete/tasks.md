@@ -28,8 +28,8 @@
 
 **⚠️ CRITICAL**: Both user story phases (3 and 4) depend on T002 being complete.
 
-- [ ] T001 Add `getDistinctNotes(): Promise<string[]>` function to `src/services/db.ts` using `SELECT DISTINCT note FROM transactions WHERE note IS NOT NULL AND note != '' ORDER BY note COLLATE NOCASE`
-- [ ] T002 Create `src/hooks/use-note-suggestions.ts` — a hook that calls `getDistinctNotes()` on mount and returns `string[]` (empty on error); depends on T001
+- [x] T001 Add `getDistinctNotes(): Promise<string[]>` function to `src/services/db.ts` using `SELECT DISTINCT note FROM transactions WHERE note IS NOT NULL AND note != '' ORDER BY note COLLATE NOCASE`
+- [x] T002 Create `src/hooks/use-note-suggestions.ts` — a hook that calls `getDistinctNotes()` on mount and returns `string[]` (empty on error); depends on T001
 
 **Checkpoint**: Foundation ready — `useNoteSuggestions()` can be imported and returns distinct notes from the DB.
 
@@ -49,8 +49,8 @@
 
 ### Implementation
 
-- [ ] T003 [US1] Create `src/components/shared/note-autocomplete.tsx` — controlled component wrapping `Autocomplete.Root` from `@base-ui/react/autocomplete`; uses `useNoteSuggestions()` for items; `limit={8}`; custom case-insensitive `contains` filter via `Autocomplete.useFilter({ sensitivity: 'base' })`; portal+positioner+popup styled to match existing `PopoverContent`; items styled to match `DropdownMenuItem`; `Autocomplete.Input` with `autoComplete="off"`; props: `value`, `onChange`, `onBlur`, `id`, `placeholder`, `autoFocus`, `className`, `ref`; depends on T002
-- [ ] T004 [P] [US1] [US2] Update `src/components/daily/transaction-form.tsx`: (1) add `autoComplete="off"` to `<form>` element, (2) add `autoComplete="off"` to the amount `<Input>`, (3) replace the note field `<Input {...field} ... />` with `<NoteAutocomplete value={field.value} onChange={field.onChange} onBlur={field.onBlur} ref={field.ref} id="note" placeholder="Açıklama" autoFocus />`; depends on T003
+- [x] T003 [US1] Create `src/components/shared/note-autocomplete.tsx` — controlled component wrapping `Autocomplete.Root` from `@base-ui/react/autocomplete`; uses `useNoteSuggestions()` for items; `limit={8}`; custom case-insensitive `contains` filter via `Autocomplete.useFilter({ sensitivity: 'base' })`; portal+positioner+popup styled to match existing `PopoverContent`; items styled to match `DropdownMenuItem`; `Autocomplete.Input` with `autoComplete="off"`; props: `value`, `onChange`, `onBlur`, `id`, `placeholder`, `autoFocus`, `className`, `ref`; depends on T002
+- [x] T004 [P] [US1] [US2] Update `src/components/daily/transaction-form.tsx`: (1) add `autoComplete="off"` to `<form>` element, (2) add `autoComplete="off"` to the amount `<Input>`, (3) replace the note field `<Input {...field} ... />` with `<NoteAutocomplete value={field.value} onChange={field.onChange} onBlur={field.onBlur} ref={field.ref} id="note" placeholder="Açıklama" autoFocus />`; depends on T003
 
 **Checkpoint**: US1 and US2 are both complete. Transaction form note field shows custom autocomplete; no browser popups appear on any form input.
 
@@ -64,7 +64,7 @@
 
 ### Implementation
 
-- [ ] T005 [P] [US3] Update `src/components/analysis/analysis-view.tsx`: replace the note filter `<Input type="text" placeholder="Not ara..." value={noteFilter} onChange={(e) => setNoteFilter(e.target.value)} className="w-40" />` with `<NoteAutocomplete value={noteFilter} onChange={setNoteFilter} placeholder="Not ara..." className="w-40" />`; depends on T003
+- [x] T005 [P] [US3] Update `src/components/analysis/analysis-view.tsx`: replace the note filter `<Input type="text" placeholder="Not ara..." value={noteFilter} onChange={(e) => setNoteFilter(e.target.value)} className="w-40" />` with `<NoteAutocomplete value={noteFilter} onChange={setNoteFilter} placeholder="Not ara..." className="w-40" />`; depends on T003
 
 **Checkpoint**: All three user stories are now complete and independently testable.
 
@@ -74,7 +74,7 @@
 
 **Purpose**: Code quality gates and end-to-end manual validation.
 
-- [ ] T006 Run `pnpm lint:fix` then `pnpm format` then `pnpm build` from repo root; fix any TypeScript errors or lint violations before proceeding
+- [x] T006 Run `pnpm lint:fix` then `pnpm format` then `pnpm build` from repo root; fix any TypeScript errors or lint violations before proceeding
 - [ ] T007 [P] Manual test all three user stories per `specs/003-comment-autocomplete/quickstart.md` test plan using `pnpm tauri dev`
 
 ---
